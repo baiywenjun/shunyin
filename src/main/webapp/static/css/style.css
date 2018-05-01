@@ -1,0 +1,93 @@
+body{
+	background-image: url(../images/bg.jpg);
+	text-align: center;
+	background-color: #ECEFF5;
+}
+button{
+	outline: none;
+	cursor: pointer;
+}
+.clearfix{
+	clear: both;
+}
+.login{
+	background-color: #fff;
+	display: inline-block;
+	width: 560px;
+	border-radius: 10px;
+	text-align: center;
+	padding-bottom: 60px;
+	opacity: 0.9;
+}
+.login label{
+	display: block;
+	margin-left: 130px;
+	border:solid 1px #ccc;
+	width: 300px;
+	border-radius: 8px;
+	margin-top: 30px;
+	// height: 50px;
+	padding: 10px;
+}
+.login h5{
+	font-size: 18px;
+    color: #4d617e;
+    padding: 42px 0 5px 0;
+    // font-weight: bold;
+}
+.login input[type="text"],.login input[type="password"]{
+	// border: solid 1px #c00;
+	vertical-align:top;
+	height: 26px;
+	width: 250px;
+	padding-left: 10px;
+	font-size: 14px;
+	outline: none;
+}
+.titlelogo{
+	margin-top:5%;
+	margin-bottom: 38px;
+}
+.ckbox{
+	display: inline-block;
+	width: 300px;
+	text-align: left;
+	color: #999;
+	font-size: 14px;
+	margin: 10px;
+	margin-top: 20px;
+	margin-left: 30px;
+}
+.login button{
+	display: inline-block;
+	background-color: #FF8723;
+	border: none;
+	color: #fff;
+	padding: 15px 120px;
+	margin-top: 10px;
+	border-radius: 5px;
+	font-size:18px;
+	margin-left: 10px;
+}
+.ckbox a{
+	float: right;
+	color: #3F88BF;
+}
+
+
+
+.transout .values>div>div:first-of-type{
+	display: inline-block;
+	width: 100px;
+}
+.transout .values>div>div:first-of-type button{
+	width: 80px;
+	background-color: #fff;
+	border: solid 1px #DCE3E7;
+}
+.transout .values>div>div:last-of-type{
+	display: inline-block;
+}
+.transout .values>div>div:last-of-type input{
+	height: 30px;width: 277px;
+}

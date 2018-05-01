@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+</head>
+<body>
+#parse("common/base.html")
+$baseUrl
+<br>
+$basePath
+<ul>
+    #foreach( $entry in $list )
+    <li>$entry</li>
+    #end
+</ul>
+<div>
+    <span id="formatMoney"></span>
+</div>
+<script src="$basePath/static/lib/jquery-1.12.4.min.js"></script>
+<script>
+    /*测试货币格式化*/
+    var formatMoney = Global.formatMoney(12,2,'$');
+    $("#formatMoney").html(formatMoney);
+</script>
+</body>
+</html>

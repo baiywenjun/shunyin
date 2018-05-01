@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	#parse("common/base.html")
+	<meta charset="UTF-8">
+	<title>用户注册</title>
+	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/normalize.css">
+	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/style.css">
+	<style type="text/css">
+		.login button{
+			margin-top: 30px;
+		}
+		.login label{
+			margin-top: 20px;
+			padding: 6px 10px;
+		}
+		.login label:last-of-type{
+			position: relative;
+		}
+		.login label i{
+			color: #8F9194;
+			font-size: 24px;
+		}
+		.login label .captcha{
+			position: absolute;
+			right: 6px;
+			height: 30px;
+			top: 5px;
+		}
+	</style>
+</head>
+<body>
+	<div class="titlelogo"><img src="$baseUrl/static/images/logotit.png" /></div>
+	<div class="login">
+		<h5>用户注册</h5>
+		<label>
+			<img src="$baseUrl/static/images/a.png" />
+			<input type="text" placeholder="请输入账号" id="userName"></input>
+		</label>
+		<label>
+			<img src="$baseUrl/static/images/m.png" />
+			<input type="password" placeholder="请输入密码" id="pwd"></input>
+		</label>
+		<label>
+			<img src="$baseUrl/static/images/m.png" />
+			<input type="password" placeholder="请确认密码" id="repeatPwd"></input>
+		</label>
+		<label>
+			<!-- <img src="images/m.png" /> -->
+			<i class="fa fa-id-card"></i>
+			<input type="text" placeholder="输入身份证号" id="identify"></input>
+		</label>
+		<label>
+			<!-- <img src="images/m.png" /> -->
+			<i class="fa fa-keyboard-o"></i>
+			<input type="text" placeholder="请输入验证码" id="code"></input>
+			<span id="captcha">
+				<img class="captcha" src="$baseUrl/auth/user/register_captcha.png" />
+			</span>
+		</label>
+		<div><button id="register">注&ensp;&ensp;册</button></div>
+	</div>
+<script type="text/javascript" src="$baseUrl/static/lib/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="$baseUrl/static/lib/layui/layui.js"></script>
+<script>
+    // 使用layer
+    var layer;
+    layui.use('layer', function () {
+        layer = layui.layer;
+    })
+
+	// 验证码刷新
+	$("#captcha").click(function () {
+        $("#captcha img").remove();
+        $(this).append("<img src='$baseUrl/auth/user/register_captcha.png' style='position: absolute;right: 6px;height: 30px;top: 5px;'/>");
+    })
+
+
+    $("#register").click(function(){
+		var userName = $("#userName").val();
+		var pwd = $("#pwd").val();
+		var repeatPwd = $("#repeatPwd").val();
+		var identify = $("#identify").val();
+		var code = $("#code").val();
+        //validateForm(userName, pwd, repeatPwd, identify, code);
+        $.ajax({
+            async: true,
+            url: '$baseUrl/auth/user/register',
+            type: 'post',
+            data : {
+                "userName":userName,
+				"pwd":pwd,
+				"repeatPwd":repeatPwd,
+				"identify":identify,
+				"code":code
+			},
+            dataType: 'json',
+            success: function(data){
+                if(data.code==200){
+					alert("注册成功");
+				}else{
+                    layer.msg(data.msg);
+				}
+            }
+        });
+
+	})
+
+    function validateForm(userName, pwd, repeatPwd, identify, code) {
+        if (userName == null || userName == '') {
+            alert("用户名不能为空")
+            return;
+        }
+        if (pwd == null || pwd == '') {
+            alert("密码不能空")
+            return;
+        }
+        if (repeatPwd == null || repeatPwd == '') {
+            alert("确认密码不能为空")
+            return;
+        }
+        if (identify == null || identify == '') {
+            alert("身份证号不能为空")
+            return;
+        }
+        if (code == null || code == '') {
+            alert("验证码不能为空")
+            return;
+        }
+    }
+
+</script>
+</body>
+</html>

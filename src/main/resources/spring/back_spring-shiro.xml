@@ -1,0 +1,64 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd 
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd 
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd 
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-4.0.xsd 
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/task
+   		http://www.springframework.org/schema/task/spring-task-4.0.xsd">
+		
+		<!-- 认证授权过滤器 -->	
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="loginUrl" value="/auth/login" />
+		<!-- <property name="successUrl" value="/" /> --><!-- 不配置返回之前的资源 -->
+		<property name="unauthorizedUrl" value="/" />
+		<property name="securityManager" ref="securityManager"/>
+		
+		<!-- 过虑器链定义，从上向下顺序执行，最上边配置anon匿名过虑器一般将/** = authc放在最下边 -->
+		<property name="filterChainDefinitions">
+			<value>
+				/static/** = anon       <!-- 对静态资源设置匿名访问 -->
+				/favicon.ico = anon     <!-- 对静态资源设置匿名访问 -->
+				/auth/** = anon         <!-- 登录相关，可匿名访问 -->
+
+				<!-- TODO 权限做完后放开 -->
+				<!--/** = authc--> <!-- 权限配置放在后面 -->
+
+			</value>
+		</property>
+	</bean>
+	
+	<!-- 认证授权管理器 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="customeRealm" />
+		<property name="sessionManager" ref="sessionManager" />
+	</bean>
+	
+	<!-- 要从数据取认证及授权的数据，要自定义Realm并注入给管理器 -->
+	<bean id="customeRealm" class="com.shunyin.auth.CustomRealm"/>
+	
+	
+	<!-- shiro框架的session配置 -->
+	<bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+		<!-- session的失效时长，单位毫秒 -->
+		<property name="globalSessionTimeout" value="7200000" /><!-- 2小时 -->
+		<!-- 删除失效的session -->
+		<property name="deleteInvalidSessions" value="true" />
+		<property name="sessionIdCookie.name" value="syid"/>
+	</bean>
+	
+	<!-- 开启shiro注解支持 -->
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+</beans>

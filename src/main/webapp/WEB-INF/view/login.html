@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	#parse("common/base.html")
+	<meta charset="UTF-8">
+	<title>顺银网络</title>
+	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/normalize.css">
+	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/style.css">
+</head>
+<body>
+	<div class="titlelogo"><img src="$baseUrl/static/images/logotit.png" /></div>
+	<div class="login">
+		<h5>用户登录</h5>
+		<label>
+			<img src="$baseUrl/static/images/a.png" />
+			<input type="text" placeholder="请输入账号" id="userName"></input>
+		</label>
+		<label>
+			<img src="$baseUrl/static/images/m.png" />
+			<input type="password" placeholder="请输入密码" id="pwd"></input>
+		</label>
+		<div class="ckbox">
+			<input type="checkbox">记住账号</input>
+			<a href="$baseUrl/auth/user/register_page">没有账号？点击注册！</a>
+			<div class="clearfix"></div>
+		</div>
+		<div><button id="login">登&ensp;&ensp;录</button></div>
+	</div>
+
+<script type="text/javascript" src="$baseUrl/static/lib/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="$baseUrl/static/lib/layui/layui.js"></script>
+<script>
+	// 使用layer
+	var layer;
+    layui.use('layer', function () {
+        layer = layui.layer;
+    })
+
+
+	$("#login").click(function(){
+	    var userName = $("#userName").val();
+	    var pwd = $("#pwd").val();
+	    if(userName==null || userName==''){
+	        layer.msg("请输入用户名");
+	        return;
+		}
+	    if(pwd==null || pwd==''){
+	        layer.msg("请输入密码")
+			return;
+		}
+        $.ajax({
+            async: true,
+            url: '$baseUrl/auth/user/login',
+            type: 'post',
+            data : {
+                "userName":userName,
+                "password":pwd,
+            },
+            dataType: 'json',
+            success: function(data){
+                if(data.code==200){
+                    layer.msg("登录成功");
+                    // 1s后进入主页
+                    setTimeout(redirectMain,500);
+                }else{
+                    layer.msg(data.msg);
+                }
+            }
+        });
+	})
+
+	function redirectMain(){
+        window.location.href = "$baseUrl/user/";
+	}
+
+    $(document).keyup(function (e) {//捕获文档对象的按键弹起事件
+        if (e.keyCode == 13) {//按键信息对象以参数的形式传递进来了
+            //此处编写用户敲回车后的代码
+			$("#login").trigger("click");
+        }
+    });
+</script>
+</body>
+</html>

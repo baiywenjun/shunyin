@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    #parse("common/base.html")
+    <meta charset="UTF-8">
+    <title>顺银-后台管理</title>
+    <link rel="stylesheet" href="$baseUrl/static/lib/layui/css/layui.css" media="all">
+</head>
+<body>
+hello world
+<div>
+    <table id="remitTable" lay-filter="remit"></table>
+</div>
+<script type="text/javascript" src="$baseUrl/static/lib/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="$baseUrl/static/lib/layui/layui.js"></script>
+<script>
+    layui.use('table', function() {
+        var table = layui.table;
+        var options = {
+            elem: '#remitTable'
+            ,url: Global.baseUrl + '/manage/remit_record' //数据接口
+            // ,where : {
+            //     userName:userName
+            // }
+            , page: true //开启分页
+            , limits: [5, 10, 20,50]
+            ,limit: 5
+            ,id: 'tableId'
+            ,cols: [[ //表头
+                { type: 'numbers', title: 'No'}
+                ,{ field: 'userName', title: '用户名', align: 'center' }
+                , { field: 'aliasUserName', title: '帐号', align: 'center'}
+                , { field: 'remitRealName', title: '打款人', align: 'center' }
+                , { field: 'remitBankCard', title: '银行卡号', align: 'center'}
+                , { field: 'remitMoney', title: '转账金额', align: 'center' }
+                , { field: 'exchange', title: '汇率', align: 'center'}
+                , { field: 'toRealName', title: '收款人', align: 'center'}
+                , { field: 'toBankCard', title: '打款银行卡号', align: 'center' }
+                , { field: 'toBankDetail', title: '打款银行明细', align: 'center' }
+                , { field: 'createTime', title: '时间', width:115, align: 'center',templet: '#dateFmt' }
+                , { field: 'confirmStatus', title: '审核状态', align: 'center' }
+                , { title: '操作', align: 'center', toolbar: '#toolbar', width: 150 }
+            ]]
+        }
+        var tableIns = table.render(options);
+
+        // table.on('tool(remit)', function(obj){
+        //     if(obj.event === 'delete'){
+        //         layer.confirm('真的要删除吗？', function(index){
+        //             layer.close(index);
+        //             var user = obj.data;
+        //             var data = deleteWithAjax(user.id);
+        //             if(data.code == 0){
+        //                 layer.alert("操作成功",{icon:1},function(index){
+        //                     pageRefresh();
+        //                 });
+        //             }else{
+        //                 layer.alert(data.msg,{icon:0});
+        //             }
+        //         });
+        //     }else if(obj.event === 'forbid'){
+        //         layer.confirm('冻结后该账号将不能访问系统！', function(index){
+        //             layer.close(index);
+        //             var user = obj.data;
+        //             var data = forbidWithAjax(user.id);
+        //             if(data.code == 0){
+        //                 layer.alert("操作成功",{icon:1},function(index){
+        //                     pageRefresh();
+        //                 });
+        //             }else{
+        //                 layer.alert(data.msg,{icon:0});
+        //             }
+        //         });
+        //     }
+        // });
+    });
+</script>
+<script type="text/html" id="toolbar">
+    {{# if(d.status == 1){ }}
+    <a class="layui-table-link" lay-event="confirm">确认收款</a>
+    {{# }                  }}
+    <!--<span class="vert-line"></span>
+    <a class="layui-table-link" lay-event="xxx">xxx</a>-->
+</script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd 
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd 
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd 
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-4.0.xsd 
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/task
+   		http://www.springframework.org/schema/task/spring-task-4.0.xsd">
+		
+		<!--  组件扫描 -->
+		<context:component-scan base-package="com.shunyin" />
+		
+		<!-- 加载springmvc默认处理器 -->
+		<mvc:annotation-driven>
+		<!-- 消息转换器 -->  
+		    <mvc:message-converters register-defaults="true">  
+		      <bean class="org.springframework.http.converter.StringHttpMessageConverter">  
+		        <property name="supportedMediaTypes" value="text/html;charset=UTF-8"/>  
+		      </bean>  
+		    </mvc:message-converters>
+		 </mvc:annotation-driven>
+
+		<!-- 配置攔截器 -->
+		<mvc:interceptors>
+			<mvc:interceptor>
+				<mvc:mapping path="/manage/**"/>
+				<bean id="authAdminInterceptor" class="com.shunyin.auth.AuthAdminInterceptor"></bean>
+			</mvc:interceptor>
+			<mvc:interceptor>
+				<mvc:mapping path="/user/**"/>
+				<bean id="authUserInterceptor" class="com.shunyin.auth.AuthUserInterceptor"></bean>
+			</mvc:interceptor>
+		</mvc:interceptors>
+
+		<!-- 配置视图解析器 -->
+		<!--<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">-->
+			<!--<property name="prefix" value="/jsp/"></property>-->
+			<!--<property name="suffix" value=".jsp"></property>-->
+		<!--</bean>-->
+
+		<!-- 配置velocity引擎 -->
+		<bean id="velocityConfigurer" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+			<property name="resourceLoaderPath" value="/WEB-INF/view/" /><!-- 模板存放的路径 -->
+			<property name="configLocation" value="classpath:velocity.properties" />
+		</bean>
+
+		<!-- 配置视图的显示 -->
+		<bean id="ViewResolver" class="org.springframework.web.servlet.view.velocity.VelocityLayoutViewResolver">
+			<property name="order" value="0"/>
+			<property name="prefix" value="" /><!-- 视图文件的前缀，即存放的路径 -->
+			<property name="suffix" value=".html" /><!-- 视图文件的后缀名 -->
+
+			<property name="toolboxConfigLocation" value="/WEB-INF/toolbox.xml" /><!--toolbox配置文件路径-->
+			<property name="dateToolAttribute" value="date" /><!--日期函数名称-->
+			<property name="numberToolAttribute" value="number" /><!--数字函数名称-->
+			<property name="contentType" value="text/html;charset=UTF-8" />
+			<property name="exposeSpringMacroHelpers" value="true" /><!--是否使用spring对宏定义的支持-->
+			<property name="exposeRequestAttributes" value="true" /><!--是否开放request属性-->
+			<property name="requestContextAttribute" value="rc"/><!--request属性引用名称-->
+			<property name="layoutUrl" value="layout/default.vm"/><!--指定layout文件-->
+		</bean>
+
+		<!-- RESTful风格下对静态资源进行放行 -->
+		<mvc:resources location="/static/" mapping="/static/**"/>
+
+</beans>

@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html>
+<head>
+	#parse("common/base.html")
+	<meta charset="UTF-8" />
+	<meta name="force-rendering" content="webkit"/>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="Expires" content="0"/>
+	<meta http-equiv="Pragma" content="no-cache"/>
+	<meta http-equiv="Cache-control" content="no-cache"/>
+	<meta http-equiv="Cache" content="no-cache"/>
+	<title>顺银网络</title>
+	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/normalize.css">
+	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/pager.css">
+    <link rel="stylesheet" type="text/css" href="$baseUrl/static/css/style.css">
+    <link rel="stylesheet" type="text/css" href="$baseUrl/static/css/base.css">
+    <link rel="stylesheet" type="text/css" href="$baseUrl/static/css/layout.css">
+	<link rel="stylesheet" href="$baseUrl/static/lib/layui/css/layui.css" media="all">
+	<style type="text/css">
+		.layui-table-cell{
+			font-size: 12px;
+			color: #000;
+			padding: 0px 5px;
+		}
+		.layui-table-page>div{
+			text-align: right;
+		}
+	</style>
+	<script type="text/javascript" src="$baseUrl/static/lib/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="$baseUrl/static/js/pager.js"></script>
+	<!--<script>document.write("<script type='text/javascript' src='$baseUrl/static/js/paySuma.js?"+Math.random()+"'></scr"+"ipt>"); </script>-->
+	<!--<script>document.write("<script type='text/javascript' src='$baseUrl/static/js/rj.js?"+Math.random()+"'></scr"+"ipt>"); </script>-->
+	<!--<script>document.write("<script type='text/javascript' src='$baseUrl/static/js/main.js?"+Math.random()+"'></scr"+"ipt>"); </script>-->
+	<script>
+		// 获取一些字典信息
+		var US_EXCHANGE = '$!dict.US_EXCHANGE';
+		var OUT_CHARGE = '$!dict.OUT_CHARGE';
+		// 获取用户信息
+		var userName = '$!userName';
+	</script>
+	<script type="text/javascript" src="$baseUrl/static/js/rj.js"></script>
+	<script type="text/javascript" src="$baseUrl/static/js/paySuma.js"></script>
+	<script type="text/javascript" src="$baseUrl/static/lib/layui/layui.js"></script>
+	<script type="text/javascript" src="$baseUrl/static/js/main.js"></script>
+	<script type="text/html" id="moneyTpl">
+		{{# var temp = d.money/100      }}
+		{{=  Global.formatMoney(temp,2,'￥')  }}
+	</script>
+	<script type="text/html" id="dollarTpl">
+		{{# var temp = d.dollar/100      }}
+		{{=  Global.formatMoney(temp,2,'$')  }}
+	</script>
+	<script type="text/html" id="takeFeeTpl">
+		{{# var temp = d.takeFee/100      }}
+		{{=  Global.formatMoney(temp,2,'')  }}
+	</script>
+	<script type="text/html" id="dateFmt">
+		{{# var temp = new Date(d.createTime)  }}
+		{{= temp.format('yyyy/MM/dd hh:mm:ss')  }}
+	</script>
+</head>
+
+<body>
+<!-- 加载 -->
+	<div class="popLayer" id="popLayer">
+	</div>
+	<div class="loading">
+		正在全力加载中...
+	</div>
+	<div id="mesbox" class="mesbox" style="display:none;">
+		<div id="mestitle" class="mestitle">
+			提示
+		</div>
+		<div id="mescont" class="mescont" style="min-width: 350px;width: 300px;">
+			你好
+		</div>
+		<div id="mesbtn" class="mesbtn">
+			<center>
+			<a class="btnok"><img src="$baseUrl/static/images/ts_06.png" width="90" height="32" border="0"/></a>
+			<a class="btnno"><img src="$baseUrl/static/images/ts_07.png" width="90" height="32" border="0"/></a>
+			</center>
+		</div>
+	</div>
+    
+<!-- 信息弹出提示框 -->
+    <div class="startMask" id="startMask" style="display:none;"></div>
+<div class="detailWin" id="detailWin" style="display:none;">
+        <div class="detailTit">提示</div>
+        <p id="closeDetail" id="closeDetail"></p>
+        <p id="detailMsg"><span>您的账户信息未提交完整，为了您的账户安全，请完善账户资料。</span><br/>资料提交后将不会弹出本提示，感谢您配合我们的工作！</p>
+        <div class="fullDetail">
+            <a href="" id="infoqrhref"><img id="infoqrimg" src=""/></a>
+    </div>
+        <br/>
+  <p style="text-align:center; line-height:30px;">请通过手机扫描二维码进行资料的提交。</p>
+    </div>
+<!-- 信息弹出提示框 End-->
+
+	<div class="goldContent">
+		<div class="main clearfix">
+			<div class="mainLeft">
+				<ul class="sideNav SideNav-pc" id="a-SideNav">
+					<li class="old current">	
+						<a href="javascript:;" class="clearfix"><i class="border-line-left"></i><i class="logo-icon icon-index-1"></i><i class="logo-icon icon-index-2"></i>账户首页</a>
+					</li>
+					<li class="old">							
+						<a href="javascript:;"><i class="border-line-left"></i><i class="logo-icon icon-rj icon-index-1"></i><i class="logo-icon icon-index-2 icon-rj-2"></i>转入资金</a>
+					</li>
+					<li class="old">						
+						<a href="javascript:;"><i class="border-line-left"></i><i class="logo-icon icon-cj icon-index-1"></i><i class="logo-icon icon-index-2 icon-cj-2"></i>转出资金</a>
+					</li>
+					<li class="old">
+						<a href="javascript:;"><i class="border-line-left"></i><i class="logo-icon icon-rj-se icon-index-1"></i><i class="logo-icon icon-index-2 icon-rj-se-2"></i>入金查询</a>
+					</li>
+					<li class="old">
+						<a href="javascript:;"><i class="border-line-left"></i><i class="logo-icon icon-cj-se icon-index-1"></i><i class="logo-icon icon-index-2 icon-cj-se-2"></i>出金查询</a>
+					</li>
+					<li class="old" id="logOut">
+						<a href="javascript:;"><i class="border-line-left"></i><i class="logo-icon icon-out icon-index-1"></i><i class="logo-icon icon-index-2 icon-out-2"></i>退出登录</a>
+					</li>
+				</ul>
+			</div>
+			<div class="mainRight">
+				<div class="rightCon">
+					<div class="titleBar">
+						<span class="title-txt">
+							<h3 onClick="$('#startMask').show();$('#detailWin').show();">账户首页</h3>
+                            <img src="$baseUrl/static/images/dashed.png" />
+						</span>
+					</div>
+					<div class="user-con4-m" id="databox1">
+						<div class="ms-c9">
+							<div class="c9title">
+								<span class="l">(<span id="dataval1">$!aliasName</span>)账号：<strong><span id="dataval0">$!userName</span></strong></span>
+								<span class="r">数据时间：<span id="datatime"></span>(<a href="javascript:;" onClick="account.queryFund();">刷新</a>)</span>
+							</div>
+							<table>
+						      	<tbody>
+							      <tr>
+							        <th>当前权益：</th>
+							        <td><span id="dataval2"></span></td>
+							        <th>自有权益：</th>
+							        <td><span id="datavalcur2"></span></td>
+							        <th>可提资金：</th>
+							        <td><span id="datavalcur1"></span></td>
+							      </tr>
+							      <tr>
+							        <th>保证金：</th>
+							        <td><span id="dataval5"></span></td>
+							        <th>开仓冻结保证金：</th>
+							        <td><span id="dataval6"></span></td>
+							        <th>可用资金：</th>
+							        <td><span id="dataval4"></span></td>
+							      </tr>
+							      <tr>
+							        <th>持仓浮动盈亏：</th>
+							        <td><span id="dataval8"></span></td>
+							        <th>平仓浮动盈亏：</th>
+							        <td><span id="dataval9"></span></td>
+							        <th>挂单冻结手续费：</th>
+							        <td><span id="dataval7"></span></td>
+							      </tr>
+							      <tr>
+							        <th>持仓盯市盈亏：</th>
+							        <td><span id="dataval11"></span></td>
+							        <th>平仓盯市盈亏：</th>
+							        <td><span id="dataval12"></span></td>
+							        <th>手续费：</th>
+							        <td><span id="dataval10"></span></td>
+							      </tr>
+							      <tr>
+							        <th>上日权益：</th>
+							        <td><span id="dataval3"></span></td>
+							        <th>授信资金：</th>
+							        <td><span id="dataval15"></span></td>
+							        <th>入金：</th>
+							        <td><span id="dataval13"></span></td>
+							      </tr>
+							      <tr>
+							        <th>历史最大权益：</th>
+							        <td><span id="dataval17"></span></td>
+							        <th>当日最大权益：</th>
+							        <td><span id="dataval18"></span></td>
+							        <th>出金：</th>
+							        <td><span id="dataval14"></span></td>
+							      </tr>
+			    				</tbody>
+						    </table>
+						    <div class="c9btn" style="display:none;">
+							    <a href="javaScript:;">追加风险金</a>
+							    <a href="javaScript:;">提取盈利</a>
+							    <a href="javaScript:;">账户结算</a>
+							    <a href="javaScript:;">账户初始密码</a>
+							    <a href="javaScript:;" class="r">登录网页交易</a>												    	    
+						    </div>
+						    <div id="bankinfobox" class="cardDetail" style="display:none;">
+						    	<p class="cardDetail-tit">银行卡信息</p>
+						    	<table>
+						    		<tbody>
+						    			<tr>
+						    				<th></th>
+						    				<th>银行名称</th>
+						    				<th>账户名</th>
+						    				<th>账户</th>
+						    				<th>省/市</th>
+						    				<th>开户行/支行</th>
+						    			</tr>
+						    			<tr>
+						    				<td><img id="bankval0" src=""></td>
+						    				<td><span id="bankval1"></span></td>
+						    				<td><span id="bankval2"></span></td>
+						    				<td><span id="bankval3"></span></td>
+						    				<td><span id="bankval4"></span>/<span id="bankval5"></span></td>
+						    				<td><span id="bankval6"></span></td>
+						    			</tr>
+						    		</tbody>
+						    	</table>
+						    </div>
+						</div>
+					</div>
+				</div>
+				<div class="rightCon" style="display: none;">
+					<div class="titleBar">
+						<span class="title-txt">
+							<h3>转入资金</h3>
+							<img src="$baseUrl/static/images/dashed.png" />
+						</span>
+					</div>
+					<div class="tabNavBar clearfix">
+						<p class="NavBarOne" data-id='Wy' style="display:none;">线上入金
+						<span id="fee1html">手续费</span>
+						</p>
+						<p class="NavBarOne addNavBar" data-id='Remit'>实时汇款
+						<span id="fee3html">手续费</span>
+						</p>
+					</div>
+					<div class="zzBox">
+						<ul>
+							<li id="Remit">
+								<form name="reactform" id="reactform" action="" method="post" target="_blank">
+									<input type="hidden" name="kj_needcredit1" id="kj_needcredit1" value=""/>
+								 	<input type="hidden" name="kj_account" id="kj_account" value=""/>
+									<input type="hidden" name="kj_money" id="kj_money" value=""/>
+								</form>
+
+								<div class="p10" style="text-align: left;">
+									<div class="input_wrap clearfix">
+										<label class="input_label" style="margin-bottom: 10px;">
+		                    				汇款账号：
+										</label>
+										<div class="bank clearfix x_bank">
+											<ul class="bankcard-list clearfix" id="bankCardlist">
+												<li class="clearfix">
+													<div class="choseBankcard">
+														<input type="radio" name="choseBank"/>
+													</div>
+													<img src="$baseUrl/static/images/abc.jpg" class="bankCardlogo" title="农业银行">
+													<div class="bankDetail">
+														<p class="bankcardNum"><span>银行帐号：</span><span class="cardNum">6228480329522386070</span></p>
+														<p class="acountName"><span>账户名称：</span><span class="companyName">陈军土</span><span class="hong-txt">(最后一个字是土，土地的土)</span></p>
+														<p class="acountName"><span>开户银行：</span><span class="bankName">农业银行杭州桐庐县支行</span></p>
+													</div>
+												</li>
+												<li class="clearfix">
+													<div class="choseBankcard">
+														<input type="radio" name="choseBank"/>
+													</div>
+													<img src="$baseUrl/static/images/icbc.jpg" class="bankCardlogo" title="工商银行">
+													<div class="bankDetail">
+														<p class="bankcardNum"><span>银行帐号：</span><span class="cardNum">6212261202042194085</span></p>
+														<p class="acountName"><span>账户名称：</span><span class="companyName">陈军土</span><span class="hong-txt">(最后一个字是土，土地的土)</span></p>
+														<p class="acountName"><span>开户银行：</span><span class="bankName">工商银行桐庐迎南支行</span></p>
+													</div>
+												</li>
+											</ul>
+										</div>											
+									</div>	
+									<div class="input_wrap clearfix">
+										<label class="input_label R_money">
+		                    				转入金额：
+										</label>
+										<div class="input_right">
+											<div class="our-bg clearfix">
+												<div class="my-bg1">
+													<input class="input_txt" id="paymoney2" name="paymoney2" type="text" onkeyup="value=value.replace(/[^\d.]/g,'');Calfee3(this)" autocomplete="off"/>
+													<span class="txt-hui">人民币<em>(请先转账，再提交转入资金申请)</em></span>
+												</div>
+												<input type="hidden" name="kj_currency3" id="kj_currency3" value="CNY"/>
+											</div>
+											<div class="tb-box">
+												<table border="0" cellspacing="0" cellpadding="0">
+													<tr>
+														<th width="100">
+															手续费(元)
+														</th>
+														<th align="center" width="100" style="background: #fff;">
+															<span class="hong-txt" id="fee3">0</span>
+														</th>
+														<th width="80">
+															转换率
+														</th>
+														<th align="center" width="100"
+														style="background: #fff;">
+															<span class="hong-txt" id="payrate2">$!dict.US_EXCHANGE</span>
+														</th>
+														<th width="180">
+															转入金额（<span id="currency12">美元</span>）
+														</th>
+														<th align="center" width="100" style="background: #fff;">
+															<span class="hong-txt" id="deposit3">0</span>
+														</th>
+													</tr>
+												</table>
+											</div>
+										</div>
+									</div>
+									<div class="input_wrap clearfix" >
+										<label class="input_label R_money">转入姓名：
+										</label>
+										<input class="input_txt" style="width:100px;" id="realname" name="realname" type="text"autocomplete="off"/> <span style="color:#999">（您本人的银行卡信息）</span>
+									</div>
+									<div class="input_wrap clearfix" >
+										<label class="input_label R_money">银行卡号：
+										</label>
+										<input class="input_txt" id="bankcardnum" name="bankcardnum" type="text"autocomplete="off"/>
+									</div>
+									<!--<div class="input_wrap clearfix" id="needcreditbox3">
+										<label class="input_label new-add">授信：
+										</label>
+										<div class="needcredit1">
+											<a href="javascript:;" class="on">默认<em></em></a>
+											<a href="javascript:;">1 倍<em></em></a>
+											<a href="javascript:;">2 倍<em></em></a>
+											<a href="javascript:;">3 倍<em></em></a>
+											<a href="javascript:;">4 倍<em></em></a>
+											<a href="javascript:;">5 倍<em></em></a>
+											<a href="javascript:;">6 倍<em></em></a>
+											<a href="javascript:;">7 倍<em></em></a>
+											<a href="javascript:;">8 倍<em></em></a>
+											<a href="javascript:;">9 倍<em></em></a>
+											<a href="javascript:;">10倍<em></em></a>
+										</div>
+									</div>-->
+									<div class="input_wrap">
+										<div class="submit_control">
+		                                <button id="paysubmit2" name="paysubmit2" type="button" class="input_btn btn_32">提交</button>
+								 		<input type="hidden" name="kj_needcredit3" id="kj_needcredit3" value=""/>
+						          		<input type="hidden" name="kj_money3" id="kj_money3" value=""/>
+										</div>
+									</div>									
+								</div>
+								<p class="Tip">手续费是转入金额的 <span id="fee3txt"></span> 。提交申请后需要财务人员进行审核，请耐心等待。</p>
+							</li>  
+							<li id="Wy" style="display: none;">
+								<form name="reactform" id="reactform" action="" method="post" target="_blank">
+									<div class="p10">
+										<div class="input_wrap clearfix">
+											<label class="input_label">
+			                    				选择银行：
+											</label>
+											<!--<div class="bank clearfix">
+                                            	<div id="jiupaipaybank" style="display:none;">
+												<a href="javascript:;" value="CCB"><img src="images/bank_ccb.gif" /><em></em></a>
+												<a href="javascript:;" value="ICBC"><img src="images/bank_icbc.gif" /><em></em></a>
+												<a href="javascript:;" value="CMB"><img src="images/bank_cmb.gif" /><em></em></a>
+												<a href="javascript:;" value="ABC"><img src="images/bank_abc.gif" /><em></em></a>
+												&lt;!&ndash;<a href="javascript:;" value="PABC"><img src="images/bank_pabc.gif" /><em></em></a>&ndash;&gt;
+												<a href="javascript:;" value="CEB"><img src="images/bank_ceb.gif" /><em></em></a>
+												&lt;!&ndash;<a href="javascript:;" value="CITIC"><img src="images/bank_citic.gif" /><em></em></a>&ndash;&gt;
+												<a href="javascript:;" value="GDB"><img src="images/bank_gdb.gif" /><em></em></a>
+												<a href="javascript:;" value="BOS"><img src="images/bank_bos.gif" /><em></em></a>
+												<a href="javascript:;" value="BOC"><img src="images/bank_boc.gif" /><em></em></a>
+												<a href="javascript:;" value="CMBC"><img src="images/bank_cmbc.gif" /><em></em></a>
+												<a href="javascript:;" value="PSBC"><img src="images/bank_psbc.gif" /><em></em></a>
+												<a href="javascript:;" value="BCOM"><img src="images/bank_bcom.gif" /><em></em></a>
+												<a href="javascript:;" value="BOB"><img src="images/bank_bob.gif" /><em></em></a>
+												<a href="javascript:;" value="HXB"><img src="images/bank_hxb.gif" /><em></em></a>
+                                                </div>
+												<div id="sumpaybank" style="display:none;">
+												<a href="javascript:;" value="ccb"><img src="images/bank_ccb.gif" /><em></em></a>
+												<a href="javascript:;" value="icbc"><img src="images/bank_icbc.gif" /><em></em></a>
+												<a href="javascript:;" value="cmb"><img src="images/bank_cmb.gif" /><em></em></a>
+												<a href="javascript:;" value="abc"><img src="images/bank_abc.gif" /><em></em></a>
+												<a href="javascript:;" value="pab"><img src="images/bank_pabc.gif" /><em></em></a>
+												<a href="javascript:;" value="ceb"><img src="images/bank_ceb.gif" /><em></em></a>
+												<a href="javascript:;" value="cncb"><img src="images/bank_citic.gif" /><em></em></a>
+												<a href="javascript:;" value="cgb"><img src="images/bank_gdb.gif" /><em></em></a>
+												<a href="javascript:;" value="shb"><img src="images/bank_bos.gif" /><em></em></a>
+												<a href="javascript:;" value="boc"><img src="images/bank_boc.gif" /><em></em></a>
+												<a href="javascript:;" value="cmsb"><img src="images/bank_cmbc.gif" /><em></em></a>
+												<a href="javascript:;" value="psbc"><img src="images/bank_psbc.gif" /><em></em></a>
+												&lt;!&ndash;<a href="javascript:;" value="comm"><img src="images/bank_bcom.gif" /><em></em></a>&ndash;&gt;
+												<a href="javascript:;" value="bjb"><img src="images/bank_bob.gif" /><em></em></a>
+                                                </div>
+												<div id="payeasebank" style="display:none;">
+												<a href="javascript:;" value="4"><img src="images/bank_ccb.gif" /><em></em></a>
+												<a href="javascript:;" value="9"><img src="images/bank_icbc.gif" /><em></em></a>
+												<a href="javascript:;" value="43"><img src="images/bank_abc.gif" /><em></em></a>
+												<a href="javascript:;" value="85"><img src="images/bank_boc.gif" /><em></em></a>
+												&lt;!&ndash;<a href="javascript:;" value="3"><img src="images/bank_cmb.gif" /><em></em></a>
+												<a href="javascript:;" value="14"><img src="images/bank_pabc.gif" /><em></em></a>
+												<a href="javascript:;" value="74"><img src="images/bank_ceb.gif" /><em></em></a>
+												<a href="javascript:;" value="33"><img src="images/bank_cib.gif" /><em></em></a>
+												<a href="javascript:;" value="69"><img src="images/bank_spdb.gif" /><em></em></a>
+												<a href="javascript:;" value="84"><img src="images/bank_citic.gif" /><em></em></a>
+												<a href="javascript:;" value="44"><img src="images/bank_gdb.gif" /><em></em></a>
+												<a href="javascript:;" value="121"><img src="images/bank_bos.gif" /><em></em></a>
+												<a href="javascript:;" value="28"><img src="images/bank_cmbc.gif" /><em></em></a>
+												<a href="javascript:;" value="59"><img src="images/bank_psbc.gif" /><em></em></a>
+												<a href="javascript:;" value="67"><img src="images/bank_bcom.gif" /><em></em></a>
+												<a href="javascript:;" value="60"><img src="images/bank_hxb.gif" /><em></em></a>
+												<a href="javascript:;" value="50"><img src="images/bank_bob.gif" /><em></em></a>
+												<a href="javascript:;" value="75"><img src="images/bank_bjrcb.gif" /><em></em></a>
+												<a href="javascript:;" value="83"><img src="images/bank_cbhb.gif" /><em></em></a>&ndash;&gt;
+                                                </div>
+												<div id="gopaybank" style="display:none;">
+                                                <a href="javascript:;" value="CCB"><img src="images/bank_CCB.gif" /><em></em></a>
+                                                <a href="javascript:;" value="CMB"><img src="images/bank_CMB.gif" /><em></em></a>
+                                                <a href="javascript:;" value="ICBC"><img src="images/bank_ICBC.gif" /><em></em></a>
+                                                <a href="javascript:;" value="BOC"><img src="images/bank_BOC.gif" /><em></em></a>
+                                                <a href="javascript:;" value="ABC"><img src="images/bank_ABC.gif" /><em></em></a>
+                                                <a href="javascript:;" value="BOCOM"><img src="images/bank_BOCOM.gif" /><em></em></a>
+                                                &lt;!&ndash;<a href="javascript:;" value="CMBC"><img src="images/bank_CMBC.gif" /><em></em></a>&ndash;&gt;
+                                                <a href="javascript:;" value="HXBC"><img src="images/bank_HXBC.gif" /><em></em></a>
+                                                <a href="javascript:;" value="CIB"><img src="images/bank_CIB.gif" /><em></em></a>
+                                                <a href="javascript:;" value="SPDB"><img src="images/bank_SPDB.gif" /><em></em></a>
+                                                <a href="javascript:;" value="GDB"><img src="images/bank_GDB.gif" /><em></em></a>
+                                                <a href="javascript:;" value="CITIC"><img src="images/bank_CITIC.gif" /><em></em></a>
+                                                <a href="javascript:;" value="CEB"><img src="images/bank_CEB.gif" /><em></em></a>
+                                                <a href="javascript:;" value="PSBC"><img src="images/bank_PSBC.gif" /><em></em></a>
+                                                <a href="javascript:;" value="BOBJ"><img src="images/bank_BOBJ.gif" /><em></em></a>
+                                                &lt;!&ndash;<a href="javascript:;" value="TCCB"><img src="images/bank_TCCB.gif" /><em></em></a>&ndash;&gt;
+                                                <a href="javascript:;" value="BOS"><img src="images/bank_BOS.gif" /><em></em></a>
+                                                <a href="javascript:;" value="PAB"><img src="images/bank_PAB.gif" /><em></em></a>
+                                                <a href="javascript:;" value="NBCB"><img src="images/bank_NBCB.gif" /><em></em></a>
+                                                <a href="javascript:;" value="NJCB"><img src="images/bank_NJCB.gif" /><em></em></a>
+                                                </div>
+												<div id="unspaybank" style="display:none;">
+                                                <a href="javascript:;" value="abc"><img src="images/bank_abc.gif" /><em></em></a>
+                                                <a href="javascript:;" value="ccb"><img src="images/bank_ccb.gif" /><em></em></a>
+                                                <a href="javascript:;" value="cib"><img src="images/bank_cib.gif" /><em></em></a>
+                                                <a href="javascript:;" value="cmb"><img src="images/bank_cmb.gif" /><em></em></a>
+                                                <a href="javascript:;" value="cmbc"><img src="images/bank_cmbc.gif" /><em></em></a>
+                                                <a href="javascript:;" value="hxb"><img src="images/bank_hxb.gif" /><em></em></a>
+                                                <a href="javascript:;" value="icbc"><img src="images/bank_icbc.gif" /><em></em></a>
+                                                <a href="javascript:;" value="bosh"><img src="images/bank_bosh.gif" /><em></em></a>
+                                                <a href="javascript:;" value="boc"><img src="images/bank_boc.gif" /><em></em></a>
+                                                <a href="javascript:;" value="comm"><img src="images/bank_comm.gif" /><em></em></a>
+                                                <a href="javascript:;" value="spdb"><img src="images/bank_spdb.gif" /><em></em></a>
+                                                <a href="javascript:;" value="gdb"><img src="images/bank_gdb.gif" /><em></em></a>
+                                                <a href="javascript:;" value="psbc"><img src="images/bank_psbc.gif" /><em></em></a>
+                                                <a href="javascript:;" value="bob"><img src="images/bank_bob.gif" /><em></em></a>
+                                                <a href="javascript:;" value="ceb"><img src="images/bank_ceb.gif" /><em></em></a>
+                                                <a href="javascript:;" value="cncb"><img src="images/bank_cncb.gif" /><em></em></a>
+                                                </div>
+											</div>-->
+											<input type="hidden" name="kj_payway" id="kj_payway" value=""/>
+										</div>	
+										<div class="input_wrap clearfix">
+											<label class="input_label">
+			                    				转入金额：
+											</label>
+											<div class="input_right">
+												<div class="our-bg clearfix">
+													<div class="my-bg" id="my-bg-1">
+														<a class="on" href="javascript:;" id="CNY1" onclick ="changecurrency1('CNY')">人民币<em></em></a>
+														<a href="javascript:;" id="USD1" onclick="changecurrency1('USD')">美元<em></em></a>
+													</div>
+														<input type="hidden" name="kj_currency1" id="kj_currency1" value="CNY"/>
+													<div class="my-bg1">
+														<input class="input_txt" id="paymoney" name="paymoney" type="text" onkeydown="if(event.keyCode==13){return false;}" onkeyup="value=value.replace(/[^\d.]/g,'');Calfee1(this)" autocomplete="off"/>
+														<span class="txt-hui" id="currency11">人民币</span>
+													</div>
+												</div>
+												<div class="tb-box">
+													<table border="0" cellspacing="0" cellpadding="0">
+														<tr>
+															<th width="100">
+																手续费(元)
+															</th>
+															<th align="center" width="100" style="background: #fff;">
+																<span class="hong-txt" id="fee1">0</span>
+															</th>
+															<th width="80">
+																转换率
+															</th>
+															<th align="center" width="100"
+															style="background: #fff;">
+																<span class="hong-txt" id="payrate"></span>
+															</th>
+															<th width="180">
+																转入金额（<span id="currency12">美元</span>）
+															</th>
+															<th align="center" width="100" style="background: #fff;">
+																<span class="hong-txt" id="deposit1">0</span>
+															</th>
+														</tr>
+													</table>
+												</div>
+											</div>
+										</div>
+										<div class="input_wrap clearfix" id="needcreditbox1">
+											<label class="input_label new-add">授信：
+											</label>
+											<div class="needcredit1">
+												<a href="javascript:;" class="on">默认<em></em></a>
+												<a href="javascript:;">1 倍<em></em></a>
+												<a href="javascript:;">2 倍<em></em></a>
+												<a href="javascript:;">3 倍<em></em></a>
+												<a href="javascript:;">4 倍<em></em></a>
+												<a href="javascript:;">5 倍<em></em></a>
+												<a href="javascript:;">6 倍<em></em></a>
+												<a href="javascript:;">7 倍<em></em></a>
+												<a href="javascript:;">8 倍<em></em></a>
+												<a href="javascript:;">9 倍<em></em></a>
+												<a href="javascript:;">10倍<em></em></a>
+											</div>
+										</div>
+										<div class="input_wrap">
+											<div class="submit_control">
+                                            <button id="paysubmit" name="paysubmit" type="button" class="input_btn btn_32">提交</button>
+											</div>
+										</div>									
+									</div>
+								</form>
+								<p class="Tip">手续费是转入金额的 <span id="fee1txt"></span> 。入金到账处理响应时间为10分钟左右，请操作后耐心等待。</p>
+							</li>                           
+						</ul>
+					</div>
+				</div>
+				<div class="rightCon" style="display:none;">
+					<div class="titleBar">
+						<span class="title-txt">
+							<h3>转出资金</h3>
+							<img src="$baseUrl/static/images/dashed.png" />
+						</span>
+					</div>
+                    <!--<div class="user-con4-m" id="databox2">
+						<table>
+							<thead>
+								<tr><th colspan="3" style="text-align: left;">(998)账号：1152100391</th>
+								<th colspan="3">数据时间：2018/4/25 15:58:01（刷新）</th></tr>
+							</thead>
+							<tr>
+								<td>当前权益：</td><td>0.00</td><td>自由权益：</td><td>0</td><td>可提资金：</td><td>0</td>
+							</tr>
+							<tr>
+								<td>保证金：</td><td>0.00</td><td>开仓冻结保证金：</td><td>0.00</td><td>可用资金：</td><td>0.00</td>
+							</tr>
+							<tr>
+								<td>持仓浮动盈余：</td><td>0.00</td><td>平仓浮动盈亏：</td><td>0.00</td><td>挂单冻结手续费：</td><td>0.00</td>
+							</tr>
+							<tr>
+								<td>持仓盯市盈亏：</td><td>0.00</td><td>平仓盯市盈亏：</td><td>0.00</td><td>手续费：</td><td>0.00</td>
+							</tr>
+							<tr>
+								<td>上日权益：</td><td>385.00</td><td>授信资金：</td><td>0.00</td><td>入金：</td><td>0.00</td>
+							</tr>
+							<tr>
+								<td>历史最大权益：</td><td>0.00</td><td>当日最大权益：</td><td>0.00</td><td>出金：</td><td>0.00</td>
+							</tr>
+						</table>
+                    </div>-->
+					<div class="zzBox">
+						<ul>
+							<li id="Wy">
+								<form action="" method="post">
+									<div class="p10">
+										
+										<div class="input_wrap clearfix  new-wrap">
+											<label class="input_label">
+			                    				转出金额：
+											</label>
+											<div class="input_right">
+												<div class="our-bg clearfix">
+													<div class="my-bg" id="my-bg-2">
+														<a class="on" href="javascript:;" id="USD2" onclick ="changecurrency2('USD')">美元<em></em></a>
+														<a href="javascript:;" id="CNY2" onclick ="changecurrency2('CNY')">人民币<em></em></a>
+													</div>
+                                                    <input type="hidden" name="kj_currency2" id="kj_currency2" value="USD"/>
+													<div class="my-bg1">
+														<input class="input_txt" id="takemoney" name="takemoney" type="text" onkeyup="value=value.replace(/[^\d.]/g,'');Calfee2(this)" autocomplete="off"/>
+                                                        <input type="hidden" name="kj_needcredit2" id="kj_needcredit2" value=""/>
+														<span class="txt-hui" id="currency21">美元</span>
+													</div>
+												</div>
+												<div class="tb-box">
+													<table border="0" cellspacing="0" cellpadding="0">
+													<tr>
+														<th width="100">
+															手续费(元)
+														</th>
+														<th align="center" style="background: #fff;" width="100">
+															<span class="hong-txt" id="fee2">$!dict.OUT_CHARGE</span>
+														</th>														
+														<th width="80">
+															转换率
+														</th>
+														<th align="center" style="background: #fff;" width="100">
+															<span class="hong-txt" id="takerate">$!dict.US_EXCHANGE</span>
+														</th>
+														<th width="180">
+															转出金额（<span id="currency22">人民币</span>）
+														</th>
+														<th align="center" style="background: #fff;" width="100">
+															<span class="hong-txt" id="deposit2">0</span>
+														</th>
+													</tr>
+													</table>
+												</div>
+											</div>
+										</div>
+										<!--<div class="input_wrap clearfix" id="needcreditbox2">
+											<label class="input_label new-add">授信：
+											</label>
+											<div class="needcredit2">
+												<a href="javascript:;" class="on">默认<em></em></a>
+												<a href="javascript:;">1 倍<em></em></a>
+												<a href="javascript:;">2 倍<em></em></a>
+												<a href="javascript:;">3 倍<em></em></a>
+												<a href="javascript:;">4 倍<em></em></a>
+												<a href="javascript:;">5 倍<em></em></a>
+												<a href="javascript:;">6 倍<em></em></a>
+												<a href="javascript:;">7 倍<em></em></a>
+												<a href="javascript:;">8 倍<em></em></a>
+												<a href="javascript:;">9 倍<em></em></a>
+												<a href="javascript:;">10倍<em></em></a>
+											</div>
+										</div>-->
+										<div class="input_wrap">
+											<div class="submit_control">
+												<a class="input_btn btn_32" href="javascript:;" onclick="sendtakemoney()">提交</a>
+											</div>
+										</div>									
+									</div>
+	                                <input type="hidden" name="kj_money2" id="kj_money2" value=""/>
+								</form>
+							</li>
+                            <p class="Tip">处理时间（工作日 <span id="taketime"></span>） 出金手续费是每笔<span id="fee2txt"></span>元，请操作后耐心等待。</p>					
+						</ul>
+					</div>					
+				</div>
+				<div class="rightCon" id="RJ" style="display: none;">
+					<div class="titleBar">
+						<span class="title-txt">
+							<h3>入金查询</h3>
+                            <img src="images/dashed.png" />
+						</span>
+					</div>
+					<div class="p10">
+						<div class="nav-top">
+							<ul>
+								<li>① 银行转帐</li>
+								<li>② 人工审核</li>
+								<li>③ 系统处理</li>
+								<li>④ 转帐成功</li>
+							</ul>
+						</div>
+						<div style="padding-right:10px;">
+							<div>
+								<table id="inRecordTable" lay-filter="inRecord"></table>
+								<!--<table width="100%" border="0" cellspacing="0" cellpadding="0">
+									<tr>
+                                        <th>流水号</th>
+                                        <th>转入</th>
+                                        <th>方式</th>
+                                        <th>手续费</th>
+                                        <th>转换</th>
+                                        <th>入金</th>
+                                        <th>自有</th>
+                                        <th>授信</th>
+                                        <th>时间</th>
+                                        <th>状态</th>
+                                    </tr>
+                                    <tr>
+										<td>541511794692120998</td>
+										<td>3610.84元</td>
+										<td>汇入</td>
+										<td>10.84元</td>
+										<td>7.2</td>
+										<td>3600.00元</td>
+										<td>500.00元</td>
+										<td>0.00元</td>
+										<td>2018/4/26/ 11:42:42</td>
+										<td>转账成功</td>
+									</tr>
+								</table>-->
+							</div>
+						</div>
+						<div class="kindPage">
+							<ul class="pagination" id="page1" value="">
+						    </ul>
+						</div>
+					</div>					
+				</div>
+				<div class="rightCon" id="CJ" style="display: none;">
+					<div class="titleBar">
+						<span class="title-txt">
+							<h3>出金查询</h3>
+                            <img src="images/dashed.png" />
+						</span>
+					</div>
+					<div class="p10">
+						<div class="nav-top">
+							<ul>
+								<li>① 提交申请</li>
+								<li>② 人工审核</li>
+								<li>③ 银行处理</li>
+								<li>④ 转帐成功</li>
+							</ul>
+						</div>
+						<div style="padding-right:10px;">
+							<div>
+								<table id="outRecordTable" lay-filter="outRecord"></table>
+								<!--<table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <th>流水号</th>
+                                    <th>转出</th>
+                                    <th>方式</th>
+                                    <th>手续费</th>
+                                    <th>转换</th>
+                                    <th>出金</th>
+                                    <th>自有</th>
+                                    <th>授信</th>
+                                    <th>时间</th>
+                                    <th>状态</th>
+                                </tr>
+								&lt;!&ndash; <tbody class="TakeInfo" id="TakeInfo"></tbody> &ndash;&gt;
+								<tr>
+										<td>541511794692120998</td>
+										<td>3610.84元</td>
+										<td>汇入</td>
+										<td>10.84元</td>
+										<td>7.2</td>
+										<td>3600.00元</td>
+										<td>500.00元</td>
+										<td>0.00元</td>
+										<td>2018/4/26/ 11:42:42</td>
+										<td>转账成功</td>
+									</tr>
+								</table>-->
+							</div>
+						</div>
+						<div class="kindPage">
+							<ul class="pagination" id="page2" value="">
+						    </ul>
+						</div>
+					</div>					
+				</div>				
+			</div>
+		</div>
+	</div>
+<script>
+
+</script>
+</body>
+</html>
