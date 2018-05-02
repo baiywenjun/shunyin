@@ -118,6 +118,21 @@ function getbankinfo(){
 	*******************/
 }
 function logout(){
+    $.ajax({
+        async: false,
+        url: Global.baseUrl + '/auth/user/logout',
+        type: 'get',
+        dataType: 'json',
+        success: function(data){
+            if(data.code == 200){
+                layer.alert("退出成功",{icon:1},function(index){
+                    window.location.href = Global.baseUrl + "/";
+                });
+            }else{
+                layer.alert("退出失败",{icon:0});
+            }
+        }
+    });
 	/*************
 	$.ajax({
 		type: "post",

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	#parse("common/base.html")
+	<meta charset="UTF-8">
+	<title>顺银投资</title>
+	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/normalize.css">
+	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/style_console.css">
+	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/personal.css">
+	<link rel="stylesheet" href="$baseUrl/static/lib/layui/css/layui.css" media="all">
+	<style type="text/css">
+		a {
+			cursor: pointer;
+		}
+		.ctn {
+			text-align: center;
+		}
+	</style>
+</head>
+<body style="text-align: left;background-color: #F5F7F8;">
+	<div class="container">
+		<div class="page recharge phone" style="background-color: #F5F7F8; ">
+			<h1>属性设置</h1>
+			<div>
+				<div class="layui-form layui-form-pane">
+					<div class="layui-form-item">
+						<label class="layui-form-label">汇率设置</label>
+						<div class="layui-input-inline">
+							<input type="text" name="exchange" lay-verify="required" placeholder="$!dict.US_EXCHANGE" value="$!dict.US_EXCHANGE" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">入金手续费</label>
+						<div class="layui-input-inline">
+							<input type="text" name="inCharge" lay-verify="required" placeholder="$!dict.IN_CHARGE" value="$!dict.IN_CHARGE" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">出金手续费</label>
+						<div class="layui-input-inline">
+							<input type="text" name="outCharge" lay-verify="required" placeholder="$!dict.OUT_CHARGE" value="$!dict.OUT_CHARGE" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="ctn">
+						<button class="layui-btn layui-btn-primary">取消</button>
+						<button class="layui-btn" lay-submit lay-filter="save">确认</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="$baseUrl/static/lib/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="$baseUrl/static/lib/layui/layui.js"></script>
+<script>
+    layui.use(['form','layer'], function() {
+		var form = layui.form;
+		var layer = layui.layer;
+		form.on('submit(save)',function (data) {
+			console.log(data);
+            $.ajax({
+                async: true,
+                url: '$baseUrl/manage/profile',
+                type: 'get',
+                data : {
+					"exchange":data.field.exchange,
+					"inCharge":data.field.inCharge,
+					"outCharge":data.field.outCharge
+				},
+                dataType: 'json',
+                success: function(data){
+                    if(data.code == 200){
+                        layer.alert("操作成功",{icon:1},function(index){
+                          window.location.reload();
+                        })
+                    }else{
+						layer.alert(data.msg,{icon:0});
+                    }
+                }
+            });
+        })
+    });
+
+</script>
+</html>

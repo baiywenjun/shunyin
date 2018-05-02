@@ -3,6 +3,7 @@ package com.shunyin.service;
 import com.shunyin.common.util.Rt;
 import com.shunyin.entity.BookUser;
 import com.baomidou.mybatisplus.service.IService;
+import com.shunyin.pojo.BookUserQuery;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -33,4 +34,7 @@ public interface BookUserService extends IService<BookUser> {
     Rt queryInMoneyListByPage(String userName, int page, int limit);
 
     Rt queryOutMoneyListByPage(String userName, int page, int limit);
+
+    // 提供admin
+    Rt queryBookListByPage(BookUserQuery query, int page, int limit);
 }

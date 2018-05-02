@@ -118,6 +118,22 @@ public class AuthUserController {
         return R.ok("success");
     }
 
+    /**
+     * 登出
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping("/logout")
+    @ResponseBody
+    public R logout(HttpServletRequest request,HttpServletResponse response){
+        Cookie cookie = new Cookie(AuthConst.USER_KEY,null);
+        cookie.setMaxAge(0);
+        cookie.setPath(request.getContextPath() + "/user/");
+        response.addCookie(cookie);
+        //request.getSession().invalidate();
+        return R.ok("success");
+    }
 
     /**
      * 用户注册

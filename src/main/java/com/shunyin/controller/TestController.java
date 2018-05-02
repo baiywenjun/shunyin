@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
  * date: 2018/4/25 10:53
  */
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/test")
 public class TestController {
 
     @RequestMapping("/hello")
     public String hello(){
         System.out.println("hello");
-        return "test/hello";
+        return "main_admin";
     }
 
 

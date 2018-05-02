@@ -1,0 +1,310 @@
+@charset "utf-8";
+body {
+  margin: 0 auto;
+  text-align: center;
+}
+.navi .logo {
+  height: 80px;
+  vertical-align: bottom;
+  position: absolute;
+}
+.navi ul {
+  display: inline-block;
+  list-style: none;
+  width: 960px;
+  text-align: left;
+}
+.navi ul li:first-of-type {
+  margin-left: 300px;
+}
+.navi ul li,
+.navi ul li a {
+  display: inline-block;
+  width: 100px;
+  height: 82px;
+  line-height: 90px;
+  text-align: center;
+}
+.navi ul li:hover {
+  border-bottom: solid 3px #c80000;
+}
+.nav-frame {
+  width: 100%;
+  height: 85px;
+  border: none;
+  margin-bottom: -4px;
+  border-bottom: solid 1px #ddd;
+}
+.line {
+  display: inline-block;
+  position: relative;
+  width: 960px;
+  height: 120px;
+  text-align: center;
+  margin-top: 20px;
+}
+.line hr {
+  position: absolute;
+  width: 960px;
+  top: 50px;
+  border: none;
+  height: 1px;
+  background-color: #EBEBEB;
+}
+.line h1 {
+  position: absolute;
+  display: inline-block;
+  background-color: #fff;
+  font-size: 32px;
+  width: 180px;
+  height: 120px;
+  line-height: 120px;
+  text-align: center;
+  left: 390px;
+}
+.content {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding-bottom: 50px;
+}
+.content p {
+  display: inline-block;
+  width: 960px;
+  text-align: left;
+  text-indent: 2em;
+  line-height: 26px;
+  margin-bottom: 6px;
+  color: #888;
+}
+.footer {
+  display: block;
+  width: 100%;
+  height: 220px;
+  background-color: #202020;
+}
+.footer ul {
+  display: inline-block;
+  width: 100%;
+  margin-top: 50px;
+}
+.footer ul li {
+  display: inline-block;
+}
+.footer p,
+.footer li,
+.footer a {
+  color: #fff;
+  font-size: 14px;
+  line-height: 26px;
+  line-height: 30px;
+}
+.bot-frame {
+  width: 100%;
+  border: none;
+  height: 200px;
+  margin-bottom: -6px;
+}
+.production {
+  height: 300px;
+}
+.production ul {
+  display: inline-block;
+  width: 960px;
+}
+.production ul li {
+  display: inline-block;
+  width: 274px;
+  height: 208px;
+  position: relative;
+  top: 30px;
+  transition: top 0.5s ease;
+  /* Firefox 4 */
+  -moz-transition: top 0.5s ease;
+  /* Safari and Chrome */
+  -webkit-transition: top 0.5s ease;
+  /* Opera */
+  -o-transition: top 0.5s ease;
+}
+.production ul li:hover {
+  top: 1px;
+}
+.production ul li:nth-child(2) {
+  margin: 0 28px;
+}
+.production ul li a {
+  display: inline-block;
+  width: 274px;
+  height: 208px;
+  background-image: url(../img/gold.jpg);
+  position: relative;
+}
+.production ul li a span {
+  display: block;
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  background-color: rgba(255, 255, 255, 0.7);
+  position: absolute;
+  bottom: 0px;
+}
+.login {
+  display: inline-block;
+  width: 960px;
+}
+.login h1 {
+  font-size: 32px;
+  text-align: left;
+  margin: 50px;
+  margin-left: 295px;
+}
+.login form {
+  width: 960px;
+  margin-bottom: 300px;
+}
+.login form label {
+  display: block;
+  margin: 30px 20px;
+  font-weight: bold;
+  color: #666;
+}
+.login form input {
+  display: inline-block;
+  height: 40px;
+  width: 300px;
+  border-radius: 3px;
+  outline: none;
+  border: solid 1px #ccc;
+  padding-left: 20px;
+}
+.login form input[type="submit"],
+.login form input[type="button"] {
+  width: 322px;
+  margin-left: 48px;
+  background-color: #1296DB;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+.login form input[type="submit"]:hover,
+.login form input[type="button"]:hover {
+  background-color: #3879D9;
+}
+.register {
+  padding-top: 30px;
+  padding-bottom: 70px;
+  background-color: #F6F4F4;
+  text-align: center;
+}
+.register form {
+  display: inline-block;
+  width: 1000px;
+  padding-top: 30px;
+  margin-top: -3px;
+  background-color: #fff;
+}
+.register .arrow {
+  display: inline-block;
+  width: 1000px;
+  height: 62px;
+  background-image: url(../img/register001.png);
+  background-repeat: no-repeat;
+  padding: 10px 0;
+  background-color: #fff;
+  background-position: 0 10px;
+}
+.register .accheck {
+  background-image: url(../img/register002.png);
+}
+.register .arrow p {
+  display: inline-block;
+  height: 60px;
+  width: 330px;
+  font-size: 22px;
+  color: #fff;
+  line-height: 60px;
+}
+.register .arrow p:nth-child(2),
+.register .arrow p:nth-child(3) {
+  color: #85878B;
+}
+.register .accheck p:nth-child(1),
+.register .accheck p:nth-child(3) {
+  color: #85878B;
+}
+.register .accheck p:nth-child(2) {
+  color: #fff;
+}
+.register label {
+  display: block;
+}
+.register label input[type="tel"],
+.register label input[type="text"],
+.register label input[type="password"] {
+  display: inline-block;
+  height: 40px;
+  width: 300px;
+  border: solid 1px #ccc;
+  outline: none;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  padding-left: 30px;
+}
+.register .code input {
+  width: 180px!important;
+}
+.register .code img {
+  vertical-align: top;
+}
+.register .agreement {
+  font-size: 18px;
+  margin-top: 10px;
+}
+.register .agreement a {
+  color: #D35556;
+}
+.register input[type="submit"] {
+  margin: 50px;
+  margin-bottom: 100px;
+  background-color: #E63A47;
+  border: none;
+  padding: 10px 52px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  outline: none;
+}
+.register input[type="submit"]:hover {
+  background-color: #F15852;
+}
+.acbox label {
+  text-align: left;
+  padding-left: 320px;
+  margin-top: 30px;
+}
+.acbox label div {
+  display: inline-block;
+  width: 90px;
+}
+.acbox label input[type="text"] {
+  width: 100px;
+  margin-top: 20px;
+}
+.acbox .phone {
+  font-weight: bold;
+}
+.acbox .prom {
+  color: #f00;
+  font-size: 14px;
+  padding-left: 20px;
+}
+.main{
+  display: block;
+  height:599px;
+  width: 900px;
+  border: none;
+  border: solid 1px #e8e8e8;
+  box-shadow: 10px 10px 10px -5px #ccbaba;
+  -moz-box-shadow: 10px 10px 10px -5px #ccbaba;
+}

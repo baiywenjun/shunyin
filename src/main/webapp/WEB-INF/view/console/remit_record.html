@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	#parse("common/base.html")
+	<meta charset="UTF-8">
+	<title>顺银投资</title>
+	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/normalize.css">
+	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/style_console.css">
+	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/personal.css">
+	<link rel="stylesheet" href="$baseUrl/static/lib/layui/css/layui.css" media="all">
+	<style type="text/css">
+		a {
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body style="text-align: left;background-color: #F5F7F8;">
+	<div class="container">
+		<div class="page recharge phone" style="background-color: #F5F7F8; ">
+			<h1>转账申请</h1>
+			<div>
+				<table id="remitTable" lay-filter="remit"></table>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="$baseUrl/static/lib/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="$baseUrl/static/lib/layui/layui.js"></script>
+<script>
+    layui.use(['table','layer'], function() {
+        var layer = layui.layer;
+        var table = layui.table;
+        var options = {
+            elem: '#remitTable'
+            ,url: Global.baseUrl + '/manage/remit_record' //数据接口
+            // ,where : {
+            //     userName:userName
+            // }
+            , page: true //开启分页
+            , limits: [5, 10, 20,50]
+            ,limit: 5
+            ,id: 'tableId'
+            ,cols: [[ //表头
+                { type: 'numbers', title: 'No'}
+                ,{ field: 'userName', title: '用户名', align: 'center', width:125 }
+                , { field: 'aliasUserName', title: '帐号', align: 'center' ,width:125}
+                , { field: 'remitRealName', title: '打款人', align: 'center' ,width:110}
+                , { field: 'remitBankCard', title: '银行卡号', align: 'center',width:200}
+                , { field: 'remitMoney', title: '转账金额', align: 'right' ,width:120, templet: '#moneyTpl'}
+                , { field: 'exchange', title: '汇率', align: 'center',width:70}
+                //, { field: 'toRealName', title: '收款人', align: 'center',width:125}
+                , { field: 'toBankCard', title: '打款银行卡号', align: 'center' ,width:200}
+                //, { field: 'toBankDetail', title: '打款银行明细', align: 'center' }
+                , { field: 'createTime', title: '时间', width:115, align: 'center',width:170, templet: '#dateFmt' }
+                , { field: 'confirmStatus', title: '审核状态', align: 'center' ,width:100, templet:"#status"}
+                , { title: '操作', align: 'center', toolbar: '#toolbar', width: 150 }
+            ]]
+        }
+        var tableIns = table.render(options);
+
+        table.on('tool(remit)', function(obj){
+            if(obj.event === 'confirm'){
+                layer.confirm('真的确认收款了吗', function(index){
+                    console.log(index);
+                    var record = obj.data;
+					console.log(record);
+					var result = confirmReceive(record.remitId)
+                    if(result.code == 200){
+                        layer.alert("操作成功",{icon:1},function (index) {
+                            console.log("OK");
+                            window.location.reload();
+                        });
+                    }else{
+                        layer.alert("操作失败",{icon:0});
+                    }
+                });
+            }
+        });
+    });
+    function confirmReceive(id){
+        var result = null;
+        $.ajax({
+            async: false,
+            url: '$baseUrl/manage/remit_confirm',
+            type: 'get',
+            data : {"remitId":id},
+            dataType: 'json',
+            success: function(data){
+                result = data;
+            }
+        });
+        return result;
+	}
+</script>
+<script type="text/html" id="toolbar">
+	{{# if(d.confirmStatus == 0){ }}
+	<a class="layui-table-link" lay-event="confirm">确认收款</a>
+	{{# }                  }}
+	<!--<span class="vert-line"></span>
+    <a class="layui-table-link" lay-event="xxx">xxx</a>-->
+</script>
+<script type="text/html" id="moneyTpl">
+	{{# var temp = d.remitMoney/100      }}
+	{{=  Global.formatMoney(temp,2,'￥')  }}
+</script>
+<script type="text/html" id="dateFmt">
+	{{# var temp = new Date(d.createTime)  }}
+	{{= temp.format('yyyy/MM/dd hh:mm:ss')  }}
+</script>
+<script type="text/html" id="status">
+	{{# if(d.confirmStatus == 0){      }}
+		<span style="color: orangered">否</span>
+	{{#  }else{     }}
+		<span style="color: green">是</span>
+	{{#  }     }}
+</script>
+</html>

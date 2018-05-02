@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Header</title>
+	<link rel="stylesheet" type="text/css" href="css/normalize.css">
+	<link rel="stylesheet" type="text/css" href="css/reset.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+	<div class="navi">
+		<ul>
+			<a href="index.html" onclick='window.parent.location.href="index.html"'><img class="logo" src="img/logo.jpg" /></a>
+			<li><a href="index.html" onclick='window.parent.location.href="index.html"'>网站首页</a></li>
+			<!-- <li><a href='javascript:window.parent.location.href="capital.html"'>都城国际</a></li>
+			<li><a href='javascript:window.parent.location.href="manager.html"'>信 管 家</a></li> -->
+			<!--用伪协议会导致页面重载，在chrome浏览器重载时框架区域会闪现文件名-->
+			<li><a href="capital.html" onclick='window.parent.location.href="capital.html"'>都城国际</a></li>
+			<li><a href="manager.html" onclick='window.parent.location.href="manager.html"'>信 管 家</a></li>
+			<li><a href="product.html" onclick='window.parent.location.href="product.html"'>交易产品</a></li>
+			<li><a href="contact.html" onclick='window.parent.location.href="contact.html"'>联系我们</a></li>
+			<li><a href="../login.html" onclick='window.parent.location.href="../login.html"'>线上开户</a></li>
+		</ul>
+	</div>	
+</body>
+<script src="lib/jquery-1.12.4.min.js"></script>
+	<script>
+		$(document).ready(function(){
+			var prop="solid 3px #c80000";
+			var urlstr=window.parent.location.href;
+			if(urlstr.indexOf('index')>0){
+				$('.navi ul li').eq(0).css({"borderBottom":prop});
+			}else if(urlstr.indexOf('capital')>0){				
+				$('.navi ul li').eq(1).css({"borderBottom":prop});
+			}else if(urlstr.indexOf('manager')>0){
+				$('.navi ul li').eq(2).css({"borderBottom":prop});
+			}else if(urlstr.indexOf('product')>0){
+				$('.navi ul li').eq(3).css({"borderBottom":prop});
+			}else if(urlstr.indexOf('contact')>0){
+				$('.navi ul li').eq(4).css({"borderBottom":prop});
+			}else if(urlstr.indexOf('login')>0){
+				$('.navi ul li').eq(5).css({"borderBottom":prop});
+			}
+		});
+	</script>
+	
+</html>

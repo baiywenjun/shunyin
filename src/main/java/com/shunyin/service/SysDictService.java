@@ -16,4 +16,6 @@ import java.util.Map;
 public interface SysDictService extends IService<SysDict> {
 
     Map<String,Object> queryMainDictConst();
+
+    boolean updateDict(String exchange, String inCharge, String outCharge);
 }

@@ -8,8 +8,10 @@ import com.shunyin.common.util.MoneyUtil;
 import com.shunyin.common.util.Rt;
 import com.shunyin.entity.BookUser;
 import com.shunyin.mapper.BookUserMapper;
+import com.shunyin.pojo.BookUserQuery;
 import com.shunyin.service.BookUserService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -106,6 +108,28 @@ public class BookUserServiceImpl extends ServiceImpl<BookUserMapper, BookUser> i
         return queryBookListByPage(userName, page, limit, type);
     }
 
+    // 提供admin
+    @Override
+    public Rt queryBookListByPage(BookUserQuery query ,int page, int limit){
+        EntityWrapper<BookUser> wrapper = new EntityWrapper<>();
+        if(query.getType() != null){
+            wrapper.eq("type",query.getType());
+        }
+        if(StringUtils.isNotEmpty(query.getUserName())){
+            wrapper.eq("user_name",query.getUserName());
+        }
+        if(StringUtils.isNotEmpty(query.getSerialNo())){
+            wrapper.eq("serial_no",query.getSerialNo());
+        }
+        // todo 其他查询条件 20180502
+        wrapper.orderBy("create_time",false);
+        int count = this.selectCount(wrapper);
+        Page<BookUser> bookUserPage = this.selectPage(new Page<BookUser>(page, limit), wrapper);
+        List<BookUser> records = bookUserPage.getRecords();
+        return Rt.ok(count,records);
+    }
+
+    // 提供user
     private Rt queryBookListByPage(String userName, int page, int limit, Integer type) {
         Wrapper<BookUser> wrapper = new EntityWrapper<BookUser>()
                 .eq("user_name", userName).eq("type", type).orderBy("create_time",false);
@@ -114,6 +138,7 @@ public class BookUserServiceImpl extends ServiceImpl<BookUserMapper, BookUser> i
         List<BookUser> records = bookUserPage.getRecords();
         return Rt.ok(count,records);
     }
+
 
 
 }

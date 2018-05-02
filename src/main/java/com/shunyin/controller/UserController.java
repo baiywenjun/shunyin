@@ -88,7 +88,7 @@ public class UserController {
      */
     @PostMapping("/transferAccountApply")
     @ResponseBody
-    public R transferAccountAppay(String realName,
+    public R transferAccountApply(String realName,
                              String bankCardNum,
                              String money,
                              String dollar,
