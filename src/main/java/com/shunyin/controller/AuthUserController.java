@@ -3,6 +3,7 @@ package com.shunyin.controller;
 import com.google.code.kaptcha.Producer;
 import com.shunyin.common.constant.AuthConst;
 import com.shunyin.common.service.AuthHandler;
+import com.shunyin.common.util.MD5Utils;
 import com.shunyin.common.util.R;
 import com.shunyin.entity.SysUser;
 import com.shunyin.service.SysUserService;
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.regex.Pattern;
 
 /**
@@ -100,7 +102,11 @@ public class AuthUserController {
         // 登录无验证码
         // 先验证验证码
         //String contextCode = (String) request.getSession().getAttribute(LOGIN_CAPTCHA_KEY);
-
+        try {
+            password = MD5Utils.MD5_32bit1(password);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
         SysUser sysUser = sysUserService.queryByUserNameAndPwd(userName, password);
         if (sysUser == null){
             return R.error(1,"帐号或密码错误");
@@ -151,6 +157,12 @@ public class AuthUserController {
         R r = this.validateRegister(userName, pwd, repeatPwd, identify, code, request);
         if(r!=null){
             return r;
+        }
+        // md5加密密码
+        try {
+            pwd = MD5Utils.MD5_32bit1(pwd);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
         }
         Boolean flag = sysUserService.userRegister(userName, pwd, identify);
         return (flag)?R.ok():R.error();

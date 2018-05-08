@@ -11,6 +11,7 @@ import com.shunyin.entity.SysUser;
 import com.shunyin.mapper.BusRemitMapper;
 import com.shunyin.mapper.SysUserMapper;
 import com.shunyin.pojo.BusRemitQuery;
+import com.shunyin.service.BookUserService;
 import com.shunyin.service.BusRemitService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ import java.util.List;
 public class BusRemitServiceImpl extends ServiceImpl<BusRemitMapper, BusRemit> implements BusRemitService {
 
     @Autowired
-    private SysUserMapper sysUserMapper;
+    private BookUserService bookUserService;
 
     @Override
     public Boolean addRemitRecord(String realName,
@@ -89,11 +90,15 @@ public class BusRemitServiceImpl extends ServiceImpl<BusRemitMapper, BusRemit> i
 
     @Override
     public Boolean confirmReceive(Long remitId) {
-        BusRemit remit = new BusRemit();
-        remit.setRemitId(remitId);
+        BusRemit remit = this.selectById(remitId);
         // 确认收款
         remit.setConfirmStatus(1);
-        return this.updateById(remit);
+        // 添加账本记录
+        Boolean addBookFlag = bookUserService.addBookUserFromTransferAccount(remit.getUserName(), remit.getAliasUserName(),
+                remit.getRemitMoney(), remit.getRemitDollar(), "元", remit.getExchange(), remit.getRemitTakeFee(),
+                "汇入","转账成功",null);
+        boolean remitFlag = this.updateById(remit);
+        return (addBookFlag || remitFlag);
     }
 
 

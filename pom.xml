@@ -169,6 +169,13 @@
             <artifactId>shiro-spring</artifactId>
             <version>1.2.3</version>
         </dependency>
+
+        <!-- 第三方支付 -->
+        <dependency>
+            <groupId>cn.com.sandpay</groupId>
+            <artifactId>sandpay-cashier-sdk</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -17,18 +17,10 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface BookUserService extends IService<BookUser> {
 
-    Boolean addBookUserFromTransferAccount(String realName,
-                                           String bankCardNum,
-                                           Integer income,
-                                           Float exchange,
-                                           String userName,
-                                           Integer deposit,
-                                           String toRealName,
-                                           String toBankName,
-                                           String toBankDetail,
-                                           String toBankCardNum);
+    Boolean addBookUserFromTransferAccount(String userName, String aliasName, Integer moneyDollar1, Integer moneyDollar2, String unit,
+                                           Float exchange, Integer takeFee, String flowWay, String status, String payNo);
 
-    Boolean addBookUserFromWithdrawal(Long userName, Float moneyDollar1, Float moneyDollar2, String unit,
+    Boolean addBookUserFromWithdrawal(String userName, Float moneyDollar1, Float moneyDollar2, String unit,
                                       Float exchange, Integer takeFee, HttpServletRequest request);
 
     Rt queryInMoneyListByPage(String userName, int page, int limit);

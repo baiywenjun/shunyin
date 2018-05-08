@@ -85,18 +85,18 @@ public class ByxgjUtil {
 		param.put("sa",sa);
 		param.put("sapass",sapass);
 		
-	 String result=HttpRequestor.getInstance().GetByGbk(deposit,param);
-	 log.debug("{deposit methoad result==>>【"+result+"】}");
-	 //{"Result":{"Error":{"Code":"0","Message":"成功"},"RequestID":"0"}}
-	  JSONObject resultJson=new JSONObject();
-	   JSONObject tempJson=Dom4j2Json.xml2Json(result);
-	   tempJson=tempJson.getJSONObject("Result");
-	   tempJson=tempJson.getJSONObject("Error");
+	 	String result=HttpRequestor.getInstance().GetByGbk(deposit,param);
+	 	log.debug("{deposit methoad result==>>【"+result+"】}");
+	 	//{"Result":{"Error":{"Code":"0","Message":"成功"},"RequestID":"0"}}
+	  	JSONObject resultJson=new JSONObject();
+	   	JSONObject tempJson=Dom4j2Json.xml2Json(result);
+	   	tempJson=tempJson.getJSONObject("Result");
+	   	tempJson=tempJson.getJSONObject("Error");
 	   
-	   resultJson.clear();
-	   resultJson.put("Code",tempJson.getInteger("Code"));
-	   resultJson.put("Message",tempJson.getString("Message"));
-	 return resultJson;
+	   	resultJson.clear();
+	   	resultJson.put("Code",tempJson.getInteger("Code"));
+	   	resultJson.put("Message",tempJson.getString("Message"));
+	 	return resultJson;
 	}
 	
 	/**
@@ -205,6 +205,7 @@ public class ByxgjUtil {
 		//JSONObject json = createaccount("13924210306", "210306", "210306", "张珊");
 		//入金
 //		double amount = 10;
+		// credit永远为正，如果amount为负，则x-10
 //		double credit = (amount * 10);
 //		String currency = "USD";
 //		String remark = "";

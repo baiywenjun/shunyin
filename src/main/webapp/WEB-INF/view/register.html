@@ -8,6 +8,7 @@
 	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/normalize.css">
 	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/reset.css">
 	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/style.css">
+	<link rel="stylesheet" href="$baseUrl/static/lib/layui/css/layui.css" media="all">
 	<style type="text/css">
 		.login button{
 			margin-top: 30px;
@@ -96,13 +97,26 @@
 				"identify":identify,
 				"code":code
 			},
+			beforeSend: function (){
+				layer.load(2);
+			},
             dataType: 'json',
             success: function(data){
                 if(data.code==200){
-					alert("注册成功");
-				}else{
-                    layer.msg(data.msg);
+                    layer.alert("注册成功",{icon:1},function(index){
+						window.location.href = Global.baseUrl + "/"
+                    });
+				} else if (data.code == 2){
+                    layer.alert("用户名已被注册，请更换其他用户名");
+				} else{
+                    layer.alert(data.msg);
 				}
+            },
+			complete: function () {
+				layer.closeAll('loading');
+            },
+            error : function(XMLHttpRequest, textStatus, errorThrown){
+                alert(errorThrown);
             }
         });
 

@@ -76,22 +76,24 @@ $(document).ready(function(){
 			checkloginstat();
 			setTimeout(function(){closeLoading();},300);
 			break;
-		case 1 ://选择入金页面
+		case 2 ://选择入金页面
 			getbankinfo();
 			checkloginstat();
 			setTimeout(function(){closeLoading();},300);
 			break;
-		case 2 ://选择出金页面，读取相关的金额状态
+		case 3 ://选择出金页面，读取相关的金额状态
 			getbankinfo();
 			checkloginstat();
 			setTimeout(function(){closeLoading();},300);
 			break;
-		case 3 ://入金查询
+		case 4 ://入金查询
 			getpayinfo(1);
+            bookUser.renderInRecord();
 			setTimeout(function(){closeLoading();},300);
 			break;
-		case 4 ://出金查询
+		case 5 ://出金查询
 			gettakeinfo(1);
+            bookUser.renderOutRecord();
 			setTimeout(function(){closeLoading();},300);
 			break;
 		default://
@@ -243,6 +245,9 @@ function Calfee2(t){
 			popAlert("金额输入错误。",function(){cancel()});
 			return false;
 		}else{
+            // fix 需求变更 用户出金费率从接口同步中获取 20180507
+            takefee = syncTakeFee;
+
 			//计算手续费和实际金额
 			if ($("#kj_currency2").val()=="CNY") {
 				fee2=parseFloat(takefee);
@@ -292,7 +297,27 @@ function Calfee3(t){
 		popAlert("金额输入错误。",function(){cancel()});
 	}
 }
-
+function Calfee4(t){
+    if(!isNaN(t.value)){
+        var amount1=parseFloat(t.value);
+        if(amount1>10000000){
+            popAlert("金额输入错误。",function(){cancel()});
+            return false;
+        }else{
+            //计算手续费和实际金额
+            //debugger;
+            if ($("#kj_currency3zx").val()=="CNY") {
+                $("#kj_money3zx").val(amount1);
+                fee1=Math.ceil(amount1*payfee2*100)/100;
+                amount1=Math.ceil((amount1-fee1)/rate1*100)/100;
+                $("#fee3zx").html(fee1);
+                $("#deposit3zx").text(amount1 + "");//入金美元
+            }
+        }
+    }else{
+        popAlert("金额输入错误。",function(){cancel()});
+    }
+}
 //入金货币单位切换
 function changecurrency1(cur){
 	if(cur=="CNY"){

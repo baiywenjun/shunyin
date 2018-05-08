@@ -1,5 +1,8 @@
 package temp;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Title: todoedit
  * Description: todoedit
@@ -7,9 +10,13 @@ package temp;
  * date: 2018/4/30 0:53
  */
 public class Style {
+    private static Logger log = LoggerFactory.getLogger(Style.class);
 
     public static void main(String[] args) {
-        String msg = "success";
-        int abc = 200;
+        log.trace("trace");
+        log.debug("debug");
+        log.info("info");
+        log.warn("warn");
+        log.error("error");
     }
 }

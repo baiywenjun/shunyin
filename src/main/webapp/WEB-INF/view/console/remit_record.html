@@ -13,12 +13,38 @@
 		a {
 			cursor: pointer;
 		}
+		.search div{
+			float: left;
+		}
 	</style>
 </head>
 <body style="text-align: left;background-color: #F5F7F8;">
 	<div class="container">
 		<div class="page recharge phone" style="background-color: #F5F7F8; ">
 			<h1>转账申请</h1>
+			<div class="search">
+				<div>
+					用户账号：<input type="text" id="userName">
+				</div>
+				<div>
+					子账号：<input type="text" id="aliasUserName">
+				</div>
+				<div>
+					真名：<input type="text" id="realName">
+				</div>
+				<div>
+					确认状态
+					<select id="confirmStatus">
+						<option value="">全部</option>
+						<option value="0">未确认</option>
+						<option value="1">已确认</option>
+					</select>
+				</div>
+				<div>
+					<button onclick="clearSearch();">清除</button>
+					<button onclick="searchRemit();">搜索</button>
+				</div>
+			</div>
 			<div>
 				<table id="remitTable" lay-filter="remit"></table>
 			</div>
@@ -28,10 +54,14 @@
 <script type="text/javascript" src="$baseUrl/static/lib/jquery-1.12.4.min.js"></script>
 <script type="text/javascript" src="$baseUrl/static/lib/layui/layui.js"></script>
 <script>
+	var table;
+	var layer;
+	var options;
+	var tableIns;
     layui.use(['table','layer'], function() {
-        var layer = layui.layer;
-        var table = layui.table;
-        var options = {
+        layer = layui.layer;
+        table = layui.table;
+        options = {
             elem: '#remitTable'
             ,url: Global.baseUrl + '/manage/remit_record' //数据接口
             // ,where : {
@@ -57,18 +87,17 @@
                 , { title: '操作', align: 'center', toolbar: '#toolbar', width: 150 }
             ]]
         }
-        var tableIns = table.render(options);
+        tableIns = table.render(options);
+
 
         table.on('tool(remit)', function(obj){
             if(obj.event === 'confirm'){
                 layer.confirm('真的确认收款了吗', function(index){
-                    console.log(index);
                     var record = obj.data;
-					console.log(record);
+					//console.log(record);
 					var result = confirmReceive(record.remitId)
                     if(result.code == 200){
                         layer.alert("操作成功",{icon:1},function (index) {
-                            console.log("OK");
                             window.location.reload();
                         });
                     }else{
@@ -78,6 +107,28 @@
             }
         });
     });
+
+    // 搜索
+    function searchRemit() {
+        var userName = $("#userName").val();
+        var aliasUserName = $("#aliasUserName").val();
+        var realName = $("#realName").val();
+        var confirmStatus = $("#confirmStatus").val();
+        tableIns.reload({
+			where:{
+			    userName:userName,
+                aliasUserName:aliasUserName,
+                realName:realName,
+                confirmStatus:confirmStatus
+			}
+		})
+    }
+
+    // 清除搜索
+    function clearSearch(){
+		$(":input,select").val('');
+	}
+
     function confirmReceive(id){
         var result = null;
         $.ajax({
@@ -85,9 +136,15 @@
             url: '$baseUrl/manage/remit_confirm',
             type: 'get',
             data : {"remitId":id},
+            beforeSend: function (){
+                layer.load(2);
+            },
             dataType: 'json',
             success: function(data){
                 result = data;
+            }
+            ,complete: function () {
+                layer.closeAll('loading');
             }
         });
         return result;

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.shunyin.common.service.ApiHandler;
 import com.shunyin.common.service.AuthHandler;
 import com.shunyin.common.util.DateUtil;
+import com.shunyin.common.util.MoneyUtil;
 import com.shunyin.common.util.R;
 import com.shunyin.common.util.Rt;
 import com.shunyin.entity.BookUser;
@@ -81,6 +82,36 @@ public class UserController {
         return R.ok(map);
     }
 
+    /**
+     * 在线充值
+     * @param userName
+     * @param money
+     * @param dollar
+     * @param exchange
+     * @param takeFee
+     * @return
+     */
+    @PostMapping("/transaction")
+    @ResponseBody
+    public R transactionOnline(String userName,String money,String dollar,String exchange,String takeFee,HttpServletRequest request){
+        log.info("用户["+userName+"],进行了在线充值:"+money);
+        Integer moneyCent = MoneyUtil.toCent(Float.parseFloat(money));
+        Integer dollarCent = MoneyUtil.toCent(Float.parseFloat(dollar));
+        Integer takeFeeCent = MoneyUtil.toCent(Float.parseFloat(takeFee));
+        float exchangeF = Float.parseFloat(exchange);
+        // 获取接口帐号
+        SysUser sysUser = AuthHandler.getSysUserTokenInfo(request);
+        String aliasAccount = null;
+        if(sysUser!=null){
+            aliasAccount = sysUser.getAliasAccount();
+        }
+        // TODO 在线充值，接入第三方支付，跳转到支付成功页面 20180505
+
+        // TODO 第三方支付成功，此处应支付成功后的页面，再添加进账本中,返回支付流水 20180505
+        Boolean flag = bookUserService.addBookUserFromTransferAccount(userName, aliasAccount, moneyCent, dollarCent, "元",
+                exchangeF, takeFeeCent,"在线充值","充值成功","00000");
+        return (flag)?R.ok("success"):R.error(1,"失败，请联系管理员");
+    }
 
     /**
      * 转账操作
@@ -136,11 +167,11 @@ public class UserController {
         Float exchangeF = Float.parseFloat(exchange);
         Float takeFeeF = Float.parseFloat(takeFee);
         Integer takeFeeCentInt = takeFeeF.intValue()*100;
-        Boolean flag = bookUserService.addBookUserFromWithdrawal(Long.parseLong(userName),
+        Boolean flag = bookUserService.addBookUserFromWithdrawal(userName,
                 Float.parseFloat(moneyDollar1),
                 Float.parseFloat(moneyDollar2),
                 unit, exchangeF, takeFeeCentInt,request);
-        return (true)?R.ok("提交成功"):R.error();
+        return (flag)?R.ok("提交成功"):R.error();
     }
 
     /**

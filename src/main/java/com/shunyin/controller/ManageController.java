@@ -102,16 +102,16 @@ public class ManageController {
      * 账本列表
      * @param type 0入金，1出金
      * @param userName
-     * @param realName
+     * @param aliasUserName
      * @param beginTime
      * @param endTime
      * @return
      */
     @RequestMapping("/book")
     @ResponseBody
-    public Rt bookUserList(String type,String userName,String realName,String serialNo,String beginTime,String endTime,
+    public Rt bookUserList(String type,String userName,String aliasUserName,String serialNo,String beginTime,String endTime,
                           int page,int limit){
-        BookUserQuery bookUserQuery = this.setBookUserQuery(type, userName, realName, serialNo, beginTime, endTime);
+        BookUserQuery bookUserQuery = this.setBookUserQuery(type, userName, aliasUserName, serialNo, beginTime, endTime);
         Rt rt = bookUserService.queryBookListByPage(bookUserQuery, page, limit);
         return rt;
     }
@@ -143,11 +143,13 @@ public class ManageController {
         return query;
     }
 
-    private BookUserQuery setBookUserQuery(String type,String userName,String realName,String serialNo,String beginTime,String endTime){
+    private BookUserQuery setBookUserQuery(String type,String userName,String aliasUserName,String serialNo,String beginTime,String endTime){
         BookUserQuery query = new BookUserQuery();
-        query.setType(type);
+        if(StringUtils.isNotEmpty(type)){
+            query.setType(type);
+        }
         query.setUserName(userName);
-        query.setRealName(realName);
+        query.setAliasUserName(aliasUserName);
         query.setSerialNo(serialNo);
         return query;
     }

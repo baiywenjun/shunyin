@@ -1,3 +1,4 @@
+
 $(function(){
     account.queryFund();
     bookUser.renderInRecord();
@@ -7,7 +8,6 @@ $(function(){
 
 // 账户
 var account = {
-
     // 查询账户资金
     queryFund:function(){
         $.ajax({
@@ -19,6 +19,8 @@ var account = {
                 console.log(data);
                 if(data.code == 200){
                     account.renderFund(data.Summary);
+                    syncTakeFee = data.Summary.Commission;
+                    console.log("getTakeFee ok");
                 }else{
                     alert(data.msg);
                 }
@@ -52,6 +54,8 @@ var account = {
         $("#dataval12").text(data.CloseProfit);
         // 手续费
         $("#dataval10").text(data.Commission);
+        // 同步到出金的地方
+        $("#fee2").text(data.Commission);
         // 上日权益
         $("#dataval3").text(data.PreBalance);
 
@@ -66,6 +70,41 @@ var account = {
         $("#dataval14").text(data.Withdraw);
     }
 
+}
+
+var transaction = {
+    online:function(){
+        var money = $("#kj_money3zx").val();
+        var dollar = $("#deposit3zx").text();
+        var exchange = US_EXCHANGE;
+        var takeFee = IN_CHARGE;
+
+        $.ajax({
+            async: false,
+            url: Global.baseUrl + '/user/transaction',
+            type: 'post',
+            data : {
+                "userName":userName,
+                "money":money,
+                "dollar":dollar,
+                "exchange":exchange,
+                "takeFee":takeFee
+            },
+            dataType: 'json',
+            success: function(data){
+                if(data.code == 200){
+                    popAlert("充值成功");
+                    $("#kj_money3zx").val("");
+                    $("#paymoney2zx").val("");
+                }else{
+                    popAlert(data.msg);
+                }
+            },
+            error : function(XMLHttpRequest, textStatus, errorThrown){
+                alert(errorThrown);
+            }
+        });
+    }
 }
 
 // 用户账本

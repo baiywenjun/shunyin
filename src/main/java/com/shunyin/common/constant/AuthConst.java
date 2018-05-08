@@ -8,6 +8,6 @@ package com.shunyin.common.constant;
  */
 public interface AuthConst {
 
-    public static final String USER_KEY = "userTokenId";
-    public static final String ADMIN_KEY = "adminTokenId";
+    String USER_KEY = "userTokenId";
+    String ADMIN_KEY = "adminTokenId";
 }

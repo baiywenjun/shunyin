@@ -57,6 +57,11 @@ public class BusRemit implements Serializable {
      */
 	@TableField("remit_dollar")
 	private Integer remitDollar;
+	/**
+	 * 转账手续费
+	 */
+	@TableField("remit_take_fee")
+	private Integer remitTakeFee;
     /**
      * 汇率
      */
@@ -219,6 +224,14 @@ public class BusRemit implements Serializable {
 		this.remark = remark;
 	}
 
+	public Integer getRemitTakeFee() {
+		return remitTakeFee;
+	}
+
+	public void setRemitTakeFee(Integer remitTakeFee) {
+		this.remitTakeFee = remitTakeFee;
+	}
+
 	@Override
 	public String toString() {
 		return "BusRemit{" +
@@ -230,6 +243,7 @@ public class BusRemit implements Serializable {
 			", remitBankName=" + remitBankName +
 			", remitMoney=" + remitMoney +
 			", remitDollar=" + remitDollar +
+			", remitTakeFee=" + remitTakeFee +
 			", exchange=" + exchange +
 			", toRealName=" + toRealName +
 			", toBankCard=" + toBankCard +

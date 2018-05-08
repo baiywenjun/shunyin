@@ -11,7 +11,7 @@ import java.util.Date;
 public class BookUserQuery {
     private String type;
     private String userName;
-    private String realName;
+    private String aliasUserName;
     private String serialNo;
     private Date beginTime;
     private Date endTime;
@@ -32,12 +32,12 @@ public class BookUserQuery {
         this.userName = userName;
     }
 
-    public String getRealName() {
-        return realName;
+    public String getAliasUserName() {
+        return aliasUserName;
     }
 
-    public void setRealName(String realName) {
-        this.realName = realName;
+    public void setAliasUserName(String aliasUserName) {
+        this.aliasUserName = aliasUserName;
     }
 
     public String getSerialNo() {
@@ -69,7 +69,7 @@ public class BookUserQuery {
         return "BookUserQuery{" +
                 "type='" + type + '\'' +
                 ", userName='" + userName + '\'' +
-                ", realName='" + realName + '\'' +
+                ", aliasUserName='" + aliasUserName + '\'' +
                 ", serialNo='" + serialNo + '\'' +
                 ", beginTime=" + beginTime +
                 ", endTime=" + endTime +

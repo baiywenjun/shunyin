@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>result</title>
+    <script type="text/javascript" src="../scripts/paymentjs.js"></script>
+    <script type="text/javascript" src="../scripts/jquery-1.7.2.min.js"></script>
+</head>
+<body>
+<p id="credential">$!JWP_ATTR</p>
+</body>
+<script>
+    wap_pay();
+    function wap_pay() {
+        var responseText = $("#credential").text();
+        console.log(responseText);
+        paymentjs.createPayment(responseText, function(result, err) {
+            console.log(result);
+            console.log(err.msg);
+            console.log(err.extra);
+        });
+    }
+</script>
+</html>

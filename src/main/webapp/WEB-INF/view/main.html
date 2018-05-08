@@ -35,7 +35,11 @@
 	<script>
 		// 获取一些字典信息
 		var US_EXCHANGE = '$!dict.US_EXCHANGE';
+		// 入金出金手续费 从字典表里拿取
+		var IN_CHARGE = '$!dict.IN_CHARGE';
 		var OUT_CHARGE = '$!dict.OUT_CHARGE';
+		// 出金手续费从参考账号里获取
+		var syncTakeFee = 0;
 		// 获取用户信息
 		var userName = '$!userName';
 	</script>
@@ -105,9 +109,12 @@
 						<a href="javascript:;" class="clearfix"><i class="border-line-left"></i><i class="logo-icon icon-index-1"></i><i class="logo-icon icon-index-2"></i>账户首页</a>
 					</li>
 					<li class="old">							
+						<a href="javascript:;"><i class="border-line-left"></i><i class="logo-icon icon-rj icon-index-1"></i><i class="logo-icon icon-index-2 icon-rj-2"></i>在线充值</a>
+					</li>
+					<li class="old">
 						<a href="javascript:;"><i class="border-line-left"></i><i class="logo-icon icon-rj icon-index-1"></i><i class="logo-icon icon-index-2 icon-rj-2"></i>转入资金</a>
 					</li>
-					<li class="old">						
+					<li class="old">
 						<a href="javascript:;"><i class="border-line-left"></i><i class="logo-icon icon-cj icon-index-1"></i><i class="logo-icon icon-index-2 icon-cj-2"></i>转出资金</a>
 					</li>
 					<li class="old">
@@ -220,6 +227,62 @@
 						</div>
 					</div>
 				</div>
+
+				<div class="rightCon" id="RJzx" style="display: none;">
+					<div class="titleBar">
+						<span class="title-txt">
+							<h3>在线充值</h3>
+							<img src="$baseUrl/static/images/dashed.png" />
+						</span>
+					</div>
+
+					<div class="input_wrap clearfix">
+						<label class="input_label R_money">
+							充值金额：
+						</label>
+						<div class="input_right">
+							<div class="our-bg clearfix">
+								<div class="my-bg1">
+									<input class="input_txt" id="paymoney2zx" name="paymoney2zx" type="text" onkeyup="value=value.replace(/[^\d.]/g,'');Calfee4(this)" autocomplete="off"/>
+									<span class="txt-hui">人民币<em></em></span>
+								</div>
+								<input type="hidden" name="kj_currency3zx" id="kj_currency3zx" value="CNY"/>
+							</div>
+							<div class="tb-box">
+								<table border="0" cellspacing="0" cellpadding="0">
+									<tr>
+										<th width="100">
+											手续费(元)
+										</th>
+										<th align="center" width="100" style="background: #fff;">
+											<span class="hong-txt" id="fee3zx">$!dict.IN_CHARGE</span>
+										</th>
+										<th width="80">
+											转换率
+										</th>
+										<th align="center" width="100"
+											style="background: #fff;">
+											<span class="hong-txt" id="payrate2zx">$!dict.US_EXCHANGE</span>
+										</th>
+										<th width="180">
+											转入金额（<span id="currency12zx">美元</span>）
+										</th>
+										<th align="center" width="100" style="background: #fff;">
+											<span class="hong-txt" id="deposit3zx">0</span>
+										</th>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="input_wrap">
+						<div class="submit_control">
+							<input type="hidden" name="kj_money3zx" id="kj_money3zx" value=""/>
+							<button name="paysubmit" type="button" class="input_btn btn_32" onclick="transaction.online()">提交</button>
+						</div>
+					</div>
+				</div>
+
 				<div class="rightCon" style="display: none;">
 					<div class="titleBar">
 						<span class="title-txt">
@@ -592,7 +655,7 @@
 															手续费(元)
 														</th>
 														<th align="center" style="background: #fff;" width="100">
-															<span class="hong-txt" id="fee2">$!dict.OUT_CHARGE</span>
+															<span class="hong-txt" id="fee2">0</span>
 														</th>														
 														<th width="80">
 															转换率
