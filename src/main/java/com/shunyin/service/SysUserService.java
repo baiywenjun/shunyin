@@ -28,5 +28,5 @@ public interface SysUserService extends IService<SysUser> {
      * @param identify
      * @return
      */
-    Boolean userRegister(String userName, String password, String identify);
+    Boolean userRegister(String userName, String password, String identify, String name);
 }

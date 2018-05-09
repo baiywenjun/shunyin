@@ -5,6 +5,7 @@ import com.shunyin.common.util.Rt;
 import com.shunyin.pojo.BookUserQuery;
 import com.shunyin.pojo.BusRemitQuery;
 import com.shunyin.service.BookUserService;
+import com.shunyin.service.BusRemitOutService;
 import com.shunyin.service.BusRemitService;
 import com.shunyin.service.SysDictService;
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -33,6 +35,9 @@ public class ManageController {
     private BusRemitService busRemitService;
 
     @Autowired
+    private BusRemitOutService busRemitOutService;
+
+    @Autowired
     private BookUserService bookUserService;
 
     @Autowired
@@ -48,6 +53,11 @@ public class ManageController {
         return "console/remit_record";
     }
 
+    @RequestMapping("/remit_out_record_page")
+    public String remitOutRecorderPage(){
+        return "console/remit_out_record";
+    }
+
     @RequestMapping("/book_page")
     public String bookUserRecord(){
         return "console/book";
@@ -61,7 +71,7 @@ public class ManageController {
     }
 
     /**
-     * 转账记录查询
+     * 入金记录查询
      * @param userName 用户名
      * @param aliasUserName 接口用户名
      * @param realName 真实姓名
@@ -72,20 +82,34 @@ public class ManageController {
      */
     @RequestMapping("/remit_record")
     @ResponseBody
-    public Rt remitRecordList(String userName,
-                              String aliasUserName,
-                              String realName,
-                              String confirmStatus,
-                              int page,
-                              int limit){
+    public Rt remitRecordList(String userName, String aliasUserName, String realName, String confirmStatus,
+                              int page, int limit){
         BusRemitQuery query = this.setBusRemitQuery(userName, aliasUserName, realName, confirmStatus);
         return busRemitService.queryListByPage(query,page,limit);
     }
 
     /**
-     * 确认收款
-     * @param remitId
+     * 出金记录查询
+     * @param userName 用户名
+     * @param aliasUserName 接口用户名
+     * @param realName 真实姓名
+     * @param confirmStatus 转账状态
+     * @param page page
+     * @param limit limit
      * @return
+     */
+    @RequestMapping("/remit_out_record")
+    @ResponseBody
+    public Rt remitOutRecordList(String userName, String aliasUserName, String realName, String confirmStatus,
+                                 int page, int limit){
+        BusRemitQuery query = this.setBusRemitQuery(userName, aliasUserName, realName, confirmStatus);
+        return busRemitOutService.queryListByPage(query,page,limit);
+    }
+
+    /**
+     * 确认收款
+     * @param remitId remitId
+     * @return r
      */
     @RequestMapping("/remit_confirm")
     @ResponseBody
@@ -97,6 +121,20 @@ public class ManageController {
         return (flag)?R.ok("操作成功"):R.error();
     }
 
+    /**
+     * 确认打款
+     * @param remitId remitId
+     * @return r
+     */
+    @RequestMapping("/send_confirm")
+    @ResponseBody
+    public R confirmSend(String remitId, HttpServletRequest request){
+        if(StringUtils.isEmpty(remitId)){
+            return R.error(1,"记录主键不能为空");
+        }
+        Boolean flag = busRemitOutService.confirmSend(remitId, request);
+        return (flag)?R.ok("操作成功"):R.error();
+    }
 
     /**
      * 账本列表

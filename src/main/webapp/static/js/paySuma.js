@@ -1177,9 +1177,25 @@ function sendtakemoney(){
 		//$("#takemoney").focus();
 		return false;
 	};
+    var toRealName = $("#outRealname").val();
+    var toBankCardNum = $("#outBankcardnum").val();
+    var toBankInfo = $("#outBankInfo").val();
+    if(toRealName == null || toRealName == ''){
+        popAlert("转入姓名不能空");
+        return false;
+	}
+    if(toBankCardNum == null || toBankCardNum == ''){
+        popAlert("银行卡号不能为空");
+        return false;
+    }
+    if(toBankInfo == null || toBankInfo == ''){
+        popAlert("银行开户行信息不能为空");
+        return false;
+    }
 	popConfirm('如果账户内有持仓或者委托挂单，系统将无法为您出金。',function(){popLoading();closeConfirm();setTimeout(function(){formtotakemoney();},50)},function(){closeConfirm()});
 }
 
+// 出金操作
 function formtotakemoney(){
 	var requestId,tradeProcess,totalBizType,totalPrice,backurl,returnurl,noticeurl,description,mersignature,goodsDesc,allowRePay,rePayTimeOut,userIdIdentity,bankCardType,payTag,sumapaySignatureSign,bankMchName,bankMchId,payType,bankCode,act
 	//
@@ -1188,10 +1204,13 @@ function formtotakemoney(){
     var outMoney2 = $("#deposit2").text();
     var locAccount = $("#dataval0").text();
     var currency = $("#kj_currency2").val();
+    var toRealName = $("#outRealname").val();
+    var toBankCardNum = $("#outBankcardnum").val();
+    var toBankInfo = $("#outBankInfo").val();
     //console.log(outMoney1);
     //console.log(outMoney2);
 	jQuery.ajax({
-		url		:	Global.baseUrl + "/user/withdrawal",
+		url		:	Global.baseUrl + "/user/withdrawalApply",
 		type	:	"POST",
 		async	:	false,
 		dataType:	"json",
@@ -1201,7 +1220,10 @@ function formtotakemoney(){
 			unit : currency,
 			userName : locAccount,
 			takeFee : OUT_CHARGE,
-			exchange : US_EXCHANGE
+			exchange : US_EXCHANGE,
+			toRealName : toRealName,
+            toBankCardNum : toBankCardNum,
+            toBankInfo : toBankInfo
 		},
 		success	:	function(data){
 			if(data.code==200){
@@ -1209,6 +1231,7 @@ function formtotakemoney(){
 				closeLoading();
 				//requestId=data.requestId;
 				popAlert(data.msg);
+				clearOutFund();
 				return true;
 			}else{
 				closeLoading();
@@ -1222,10 +1245,19 @@ function formtotakemoney(){
 		}
 	});	
 
-
-	
 	$("#requestId").val(requestId);
 
+}
+
+// 清除出金操作的输入框
+function clearOutFund(){
+    //$("#takemoney").val("");
+    //$("#deposit2").text("");
+    //$("#dataval0").text("");
+    //$("#kj_currency2").val("");
+    $("#outRealname").val("");
+    $("#outBankcardnum").val("");
+    $("#outBankInfo").val("");
 }
 
 function checkpaymoney(id){

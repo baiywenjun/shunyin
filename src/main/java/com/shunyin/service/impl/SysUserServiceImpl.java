@@ -39,7 +39,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
 
     @Override
-    public Boolean userRegister(String userName,String password,String identify){
+    public Boolean userRegister(String userName,String password,String identify, String name){
         JSONObject createaccount = ByxgjUtil.createaccount(null, password, null, userName);
         Integer code = (Integer) createaccount.get("Code");
         String childAccount = (String) createaccount.get("Account");
@@ -50,14 +50,21 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         sysUser.setUserName(userName);
         sysUser.setPassword(password);
         sysUser.setIdentity(identify);
+        sysUser.setName(name);
         sysUser.setAliasAccount(childAccount);
         boolean insert = this.insert(sysUser);
         // 对一个账号进行同步费率设置
-        JSONObject setResult = ByxgjUtil.setcommissionrate(null, childAccount, ConfigConst.FLOW_ACCOUNT);
-        log.info(setResult.toJSONString());
-        Object resultCode = ((Map)((Map)setResult.get("Result")).get("Error")).get("Code");
+        JSONObject setCmsrResult = ByxgjUtil.setcommissionrate(null, childAccount, ConfigConst.FLOW_ACCOUNT);
+        JSONObject setmarginrate = ByxgjUtil.setmarginrate(null, childAccount, ConfigConst.FLOW_ACCOUNT);
+        log.info(setCmsrResult.toJSONString());
+        log.info(setmarginrate.toJSONString());
+        Object resultCode = ((Map)((Map)setCmsrResult.get("Result")).get("Error")).get("Code");
         if(! "0".equals(resultCode)){
             throw new RRException("接口同步费率错误");
+        }
+        Object resultCode_b = ((Map)((Map)setmarginrate.get("Result")).get("Error")).get("Code");
+        if(! "0".equals(resultCode_b)){
+            throw new RRException("接口同步保障金错误");
         }
         return insert;
     }

@@ -11,10 +11,7 @@ import com.shunyin.common.util.Rt;
 import com.shunyin.entity.BookUser;
 import com.shunyin.entity.SysDict;
 import com.shunyin.entity.SysUser;
-import com.shunyin.service.BookAdminService;
-import com.shunyin.service.BookUserService;
-import com.shunyin.service.BusRemitService;
-import com.shunyin.service.SysDictService;
+import com.shunyin.service.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +49,9 @@ public class UserController {
 
     @Autowired
     private BusRemitService busRemitService;
+
+    @Autowired
+    private BusRemitOutService busRemitOutService;
 
     @Autowired
     private BookUserService bookUserService;
@@ -160,18 +160,23 @@ public class UserController {
      * 提现操作
      * @return
      */
-    @PostMapping("/withdrawal")
+    @PostMapping("/withdrawalApply")
     @ResponseBody
-    public R withdrawal(String userName,String moneyDollar1,String moneyDollar2,String unit,
-                        String exchange,String takeFee,HttpServletRequest request){
+    public R withdrawal(String userName,String moneyDollar1,String moneyDollar2,String unit,String exchange,String takeFee,
+                        String toRealName, String toBankCardNum, String toBankInfo, HttpServletRequest request){
         Float exchangeF = Float.parseFloat(exchange);
         Float takeFeeF = Float.parseFloat(takeFee);
         Integer takeFeeCentInt = takeFeeF.intValue()*100;
-        Boolean flag = bookUserService.addBookUserFromWithdrawal(userName,
-                Float.parseFloat(moneyDollar1),
-                Float.parseFloat(moneyDollar2),
-                unit, exchangeF, takeFeeCentInt,request);
-        return (flag)?R.ok("提交成功"):R.error();
+        Float md1F = Float.parseFloat(moneyDollar1);
+        Float md2F = Float.parseFloat(moneyDollar2);
+        String aliasAccount = AuthHandler.getSysUserTokenInfo(request).getAliasAccount();
+        // fix 支付接口不能联调，加入转出转账操作 20180509
+        Boolean flag_out = busRemitOutService.addRemitOutRecord(userName,aliasAccount, toRealName, toBankCardNum, null, toBankInfo, MoneyUtil.toCent(md1F),
+                MoneyUtil.toCent(md2F), unit, exchangeF, takeFeeCentInt);
+
+        // 无论是否转账，加入账本记录 删除
+        //Boolean flag = bookUserService.addBookUserFromWithdrawal(userName, md1F, md2F, unit, exchangeF, takeFeeCentInt,request);
+        return (flag_out)?R.ok("提交成功"):R.error();
     }
 
     /**

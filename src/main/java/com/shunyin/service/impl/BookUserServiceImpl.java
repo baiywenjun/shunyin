@@ -74,7 +74,28 @@ public class BookUserServiceImpl extends ServiceImpl<BookUserMapper, BookUser> i
     }
 
     @Override
-    public Boolean addBookUserFromWithdrawal(String userName, Float moneyDollar1,Float moneyDollar2, String unit,
+    public Boolean addBookUserFromWithdrawalOffline(String userName, String aliasUserName, Integer money, Integer dollar, String unit,
+                                                    Float exchange, Integer takeFee){
+        BookUser bookUser = new BookUser();
+        bookUser.setSerialNo(UUID.randomUUID().toString().replace("-","").toUpperCase());
+        bookUser.setUserName(userName);
+        bookUser.setAliasUserName(aliasUserName);
+        bookUser.setMoney(money);
+        bookUser.setDollar(dollar);
+        bookUser.setMonetaryUnit(unit);
+        bookUser.setFlowWay("自动转账");
+        bookUser.setTakeFee(takeFee);
+        bookUser.setExchange(exchange);
+        bookUser.setCreateTime(new Date());
+        bookUser.setStatus("转账成功");
+        bookUser.setType(1); //出金
+        boolean flag = this.insert(bookUser);
+        // 线下管理员自己操作输入金
+        return flag;
+    }
+
+    @Override
+    public Boolean addBookUserFromWithdrawal(String userName, Integer moneyDollar1,Integer moneyDollar2, String unit,
                                              Float exchange, Integer takeFee, HttpServletRequest request){
         String aliasAccount = AuthHandler.getSysUserTokenInfo(request).getAliasAccount();
         BookUser bookUser = new BookUser();
@@ -82,13 +103,13 @@ public class BookUserServiceImpl extends ServiceImpl<BookUserMapper, BookUser> i
         bookUser.setUserName(userName);
         bookUser.setAliasUserName(aliasAccount);
         if("CNY".equals(unit)){
-            bookUser.setMoney(MoneyUtil.toCent(moneyDollar1));
-            bookUser.setDollar(MoneyUtil.toCent(moneyDollar2));
+            bookUser.setMoney(moneyDollar1);
+            bookUser.setDollar(moneyDollar2);
             bookUser.setMonetaryUnit("元");
         }
         if("USD".equals(unit)){
-            bookUser.setDollar(MoneyUtil.toCent(moneyDollar1));
-            bookUser.setMoney(MoneyUtil.toCent(moneyDollar2));
+            bookUser.setDollar(moneyDollar1);
+            bookUser.setMoney(moneyDollar2);
             bookUser.setMonetaryUnit("美元");
         }
         bookUser.setFlowWay("自动转账");
@@ -99,7 +120,7 @@ public class BookUserServiceImpl extends ServiceImpl<BookUserMapper, BookUser> i
         bookUser.setType(1);//出金
         boolean flag = this.insert(bookUser);
         // 对接口帐号出入金操作
-        Integer amount = -MoneyUtil.toCent(moneyDollar1);
+        Integer amount = -moneyDollar1;
         if("CNY".equals(unit)){
             this.inOutOperate(aliasAccount,amount,"CNH");
         }

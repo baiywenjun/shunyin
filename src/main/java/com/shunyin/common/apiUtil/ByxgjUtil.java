@@ -112,7 +112,21 @@ public class ByxgjUtil {
 	String result=HttpRequestor.getInstance().GetByGbk(setcommissionrate, param);
 	  return Dom4j2Json.xml2Json(result);
 	}
-	
+
+
+	// 设置保障金
+	public static JSONObject setmarginrate(Integer requestid, String account, String source){
+		param.clear();
+		param.put("requestid",requestid);
+		param.put("sa", sa);
+		param.put("sapass",sapass);
+		param.put("account", account);
+		param.put("source", source);
+		String result=HttpRequestor.getInstance().GetByGbk(setmarginrate, param);
+		return Dom4j2Json.xml2Json(result);
+	}
+
+	// 设置汇率
 	public static JSONObject setcurrencyrate(Integer requestid ,String account,String source){
 		param.clear();
 	    param.put("requestid",requestid);

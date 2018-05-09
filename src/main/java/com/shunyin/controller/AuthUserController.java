@@ -53,12 +53,12 @@ public class AuthUserController {
      * @return
      */
     @RequestMapping("/login_page")
-    public String userLoginPage(){
+    public String viewUserLoginPage(){
         return "login";
     }
 
     @RequestMapping("/register_page")
-    public String userRegister(){
+    public String viewUserRegister(){
         return "register";
     }
 
@@ -152,9 +152,9 @@ public class AuthUserController {
      */
     @PostMapping("/register")
     @ResponseBody
-    public R userRegister(String userName, String pwd, String repeatPwd, String identify, String code,
+    public R userRegister(String userName, String pwd, String repeatPwd, String identify, String name, String code,
                           HttpServletRequest request){
-        R r = this.validateRegister(userName, pwd, repeatPwd, identify, code, request);
+        R r = this.validateRegister(userName, pwd, repeatPwd, identify, name, code, request);
         if(r!=null){
             return r;
         }
@@ -164,7 +164,7 @@ public class AuthUserController {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        Boolean flag = sysUserService.userRegister(userName, pwd, identify);
+        Boolean flag = sysUserService.userRegister(userName, pwd, identify,name);
         return (flag)?R.ok():R.error();
     }
 
@@ -179,7 +179,7 @@ public class AuthUserController {
      * @param request
      * @return
      */
-    private R validateRegister(String userName, String pwd, String repeatPwd, String identify, String code,
+    private R validateRegister(String userName, String pwd, String repeatPwd, String identify, String name, String code,
                                HttpServletRequest request){
         if(StringUtils.isBlank(userName)){
             return R.error(1,"用户名不能为空");
@@ -192,6 +192,9 @@ public class AuthUserController {
         }
         if(StringUtils.isBlank(identify)){
             return R.error(1,"身份证信息不能为空");
+        }
+        if(StringUtils.isBlank(name)){
+            return R.error(1,"姓名不能为空");
         }
         if(StringUtils.isBlank(code)){
             return R.error(1,"验证码不能为空");

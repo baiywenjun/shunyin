@@ -26,6 +26,9 @@
 		.layui-table-page>div{
 			text-align: right;
 		}
+		.hide {
+			display: none;
+		}
 	</style>
 	<script type="text/javascript" src="$baseUrl/static/lib/jquery-1.12.4.min.js"></script>
 	<script type="text/javascript" src="$baseUrl/static/js/pager.js"></script>
@@ -108,7 +111,7 @@
 					<li class="old current">	
 						<a href="javascript:;" class="clearfix"><i class="border-line-left"></i><i class="logo-icon icon-index-1"></i><i class="logo-icon icon-index-2"></i>账户首页</a>
 					</li>
-					<li class="old">							
+					<li class="old hide">
 						<a href="javascript:;"><i class="border-line-left"></i><i class="logo-icon icon-rj icon-index-1"></i><i class="logo-icon icon-index-2 icon-rj-2"></i>在线充值</a>
 					</li>
 					<li class="old">
@@ -148,9 +151,9 @@
 							        <th>当前权益：</th>
 							        <td><span id="dataval2"></span></td>
 							        <th>自有权益：</th>
-							        <td><span id="datavalcur2"></span></td>
+							        <td><span id="datavalcur2">0.00</span></td>
 							        <th>可提资金：</th>
-							        <td><span id="datavalcur1"></span></td>
+							        <td><span id="datavalcur1">0.00</span></td>
 							      </tr>
 							      <tr>
 							        <th>保证金：</th>
@@ -180,7 +183,7 @@
 							        <th>上日权益：</th>
 							        <td><span id="dataval3"></span></td>
 							        <th>授信资金：</th>
-							        <td><span id="dataval15"></span></td>
+							        <td><span id="dataval15">0.00</span></td>
 							        <th>入金：</th>
 							        <td><span id="dataval13"></span></td>
 							      </tr>
@@ -312,7 +315,7 @@
 										<label class="input_label" style="margin-bottom: 10px;">
 		                    				汇款账号：
 										</label>
-										<div class="bank clearfix x_bank">
+										<div class="bank clearfix x_bank" style="margin-left: 85px;margin-top: -32px;">
 											<ul class="bankcard-list clearfix" id="bankCardlist">
 												<li class="clearfix">
 													<div class="choseBankcard">
@@ -673,6 +676,21 @@
 													</table>
 												</div>
 											</div>
+										</div>
+										<div class="input_wrap clearfix" >
+											<label class="input_label R_money">转入姓名：
+											</label>
+											<input class="input_txt" style="width:100px;margin-left: -375px;" id="outRealname" name="outRealname" type="text"autocomplete="off" /> <span style="color:#999">（您本人的银行卡信息）</span>
+										</div>
+										<div class="input_wrap clearfix" >
+											<label class="input_label R_money">银行卡号：
+											</label>
+											<input class="input_txt" id="outBankcardnum" name="outBankcardnum" type="text"autocomplete="off" style="margin-left: -356px;"/>
+										</div>
+										<div class="input_wrap clearfix" >
+											<label class="input_label R_money">开户行信息：
+											</label>
+											<input class="input_txt" id="outBankInfo" name="outBankInfo" type="text"autocomplete="off" style="margin-left: -356px;"/>
 										</div>
 										<!--<div class="input_wrap clearfix" id="needcreditbox2">
 											<label class="input_label new-add">授信：

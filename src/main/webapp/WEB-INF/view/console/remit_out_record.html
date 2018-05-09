@@ -109,10 +109,10 @@
 	</style>
 </head>
 <body style="text-align: left;background-color: #F5F7F8;">
-	<div class="container">
-		<div class="page recharge phone" style="background-color: #F5F7F8; ">
-			<p class="title">入金申请</p>
-			<blockquote class="layui-elem-quote">
+<div class="container">
+	<div class="page recharge phone" style="background-color: #F5F7F8; ">
+		<p class="title">出金申请</p>
+		<blockquote class="layui-elem-quote">
 			<div class="search">
 				<div>
 					<label><span>用户账号：</span><input type="text" id="userName"></label>
@@ -138,12 +138,12 @@
 					<button style="border: none;height: 28px;line-height: 28px;vertical-align: top;margin-top: 1px;" onclick="searchRemit();">搜索</button>
 				</div>
 			</div>
-			</blockquote>
-			<div style="padding-right: 0px;">
-				<table id="remitTable" lay-filter="remit"></table>
-			</div>
+		</blockquote>
+		<div style="padding-right: 0px;">
+			<table id="remitTable" lay-filter="remit"></table>
 		</div>
 	</div>
+</div>
 </body>
 <script type="text/javascript" src="$baseUrl/static/lib/jquery-1.12.4.min.js"></script>
 <script type="text/javascript" src="$baseUrl/static/lib/layui/layui.js"></script>
@@ -157,7 +157,7 @@
         table = layui.table;
         options = {
             elem: '#remitTable'
-            ,url: Global.baseUrl + '/manage/remit_record' //数据接口
+            ,url: Global.baseUrl + '/manage/remit_out_record' //数据接口
             // ,where : {
             //     userName:userName
             // }
@@ -169,15 +169,17 @@
                 //{ type: 'numbers', title: 'No'},
                 { field: 'userName', title: '用户名', align: 'center', width:100 }
                 , { field: 'aliasUserName', title: '帐号', align: 'center' ,width:95}
-                , { field: 'remitRealName', title: '打款人', align: 'center' ,width:80}
-                , { field: 'remitBankCard', title: '银行卡号', align: 'center',width:80}
-                , { field: 'remitMoney', title: '转账金额', align: 'right' ,width:80, templet: '#moneyTpl'}
+                //, { field: 'remitRealName', title: '打款人', align: 'center' ,width:110}
+                //, { field: 'remitBankCard', title: '银行卡号', align: 'center',width:200}
+                , { field: 'remitMoney', title: '转帐金额', align: 'right' ,width:80, templet: '#moneyTpl1'}
+                //, { field: 'remitDollar', title: '金额', align: 'right' ,width:80, templet: '#moneyTpl2'}
+                , { field: 'remitUnit', title: '货币单位', align: 'right' ,width:60}
                 , { field: 'exchange', title: '汇率', align: 'center',width:50}
-                //, { field: 'toRealName', title: '收款人', align: 'center',width:125}
-                , { field: 'toBankCard', title: '打款银行卡号', align: 'center' ,width:80}
-                //, { field: 'toBankDetail', title: '打款银行明细', align: 'center' }
-                , { field: 'createTime', title: '时间', width:115, align: 'center',width:150, templet: '#dateFmt' }
-                , { field: 'confirmStatus', title: '审核状态', align: 'center' ,width:80, templet:"#status"}
+                , { field: 'toRealName', title: '收款人', align: 'center',width:80}
+                , { field: 'toBankCard', title: '打款银行卡号', align: 'center' ,width:100}
+                , { field: 'toBankDetail', title: '打款银行明细', align: 'center' }
+                , { field: 'createTime', title: '时间', align: 'center',width:120, templet: '#dateFmt' }
+                , { field: 'confirmStatus', title: '审核状态', align: 'center' ,width:60, templet:"#status"}
                 , { title: '操作', align: 'center', toolbar: '#toolbar', width: 60 }
             ]]
         }
@@ -186,10 +188,10 @@
 
         table.on('tool(remit)', function(obj){
             if(obj.event === 'confirm'){
-                layer.confirm('真的确认收款了吗', function(index){
+                layer.confirm('真的确认打款了吗', function(index){
                     var record = obj.data;
 					//console.log(record);
-					var result = confirmReceive(record.remitId)
+					var result = confirmSend(record.remitId)
                     if(result.code == 200){
                         layer.alert("操作成功",{icon:1},function (index) {
                             window.location.reload();
@@ -223,11 +225,11 @@
 		$(":input,select").val('');
 	}
 
-    function confirmReceive(id){
+    function confirmSend(id){
         var result = null;
         $.ajax({
             async: false,
-            url: '$baseUrl/manage/remit_confirm',
+            url: '$baseUrl/manage/send_confirm',
             type: 'get',
             data : {"remitId":id},
             beforeSend: function (){
@@ -246,14 +248,25 @@
 </script>
 <script type="text/html" id="toolbar">
 	{{# if(d.confirmStatus == 0){ }}
-	<a class="layui-table-link" lay-event="confirm">确认收款</a>
+	<a class="layui-table-link" lay-event="confirm">确认打款</a>
 	{{# }                  }}
 	<!--<span class="vert-line"></span>
     <a class="layui-table-link" lay-event="xxx">xxx</a>-->
 </script>
-<script type="text/html" id="moneyTpl">
+<script type="text/html" id="moneyTpl1">
+	{{#  var showTemp = 0.00,unit='$'    }}
+	{{#  if(d.remitUnit == '元') {       }}
+	{{#      showTemp = d.remitMoney;    }}
+	{{#      unit = '￥'                 }}
+	{{#   } else if(d.remitUnit == '美元') {  }}
+	{{#      showTemp = d.remitDollar         }}
+	{{#   }            }}
+	{{# var temp = showTemp/100            }}
+	{{=   Global.formatMoney(temp,2,unit)      }}
+</script>
+<script type="text/html" id="moneyTpl2">
 	{{# var temp = d.remitMoney/100      }}
-	{{=  Global.formatMoney(temp,2,'￥')  }}
+	{{=  Global.formatMoney(temp,2,'$')  }}
 </script>
 <script type="text/html" id="dateFmt">
 	{{# var temp = new Date(d.createTime)  }}

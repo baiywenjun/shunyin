@@ -14,9 +14,10 @@
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
     <!-- 加载证书 -->
-    <listener>
-        <listener-class>cn.com.sandpay.web.listener.ContextLoadListener</listener-class>
-    </listener>
+    <!-- 三德支付暂不能联调 -->
+    <!--<listener>-->
+        <!--<listener-class>cn.com.sandpay.web.listener.ContextLoadListener</listener-class>-->
+    <!--</listener>-->
 
     <!--加载springmvc配置-->
     <servlet>

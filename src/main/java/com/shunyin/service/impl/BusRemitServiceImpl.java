@@ -83,6 +83,7 @@ public class BusRemitServiceImpl extends ServiceImpl<BusRemitMapper, BusRemit> i
             wrapper.eq("confirm_status",query.getConfirmStatus());
         }
         int count = this.selectCount(wrapper);
+        wrapper.orderBy("create_time",false);
         Page<BusRemit> busRemitPage = this.selectPage(new Page<BusRemit>(page, limit), wrapper);
         List<BusRemit> records = busRemitPage.getRecords();
         return Rt.ok(count,records);

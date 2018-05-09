@@ -16,35 +16,68 @@
 		.ctn {
 			text-align: center;
 		}
+		.page{
+			margin-left: -8px;
+			text-align: center;
+		}
+		.page .layui-form-item>div{
+			display: inline-block;
+		}
+		.page .layui-form-item{
+			text-align: center;
+		}
+		.title{
+			display: block!important;
+			font-size: 20px;
+			margin-bottom: 30px;
+			text-align: left;
+			/*margin-top: -20px!important;*/
+			/*margin-left: 50px!important;*/
+		}
+		.layui-elem-quote{
+			border-left: 5px solid #34A8FA;
+			margin-left: 20px;
+			margin-top: -10px;
+			margin-bottom: 30px;
+		}
+		.hide{
+			display: none;
+		}
 	</style>
 </head>
 <body style="text-align: left;background-color: #F5F7F8;">
 	<div class="container">
 		<div class="page recharge phone" style="background-color: #F5F7F8; ">
-			<h1>属性设置</h1>
+			<blockquote class="layui-elem-quote"><p class="title">属性设置</p></blockquote>
 			<div>
 				<div class="layui-form layui-form-pane">
 					<div class="layui-form-item">
-						<label class="layui-form-label">汇率设置</label>
-						<div class="layui-input-inline">
-							<input type="text" name="exchange" lay-verify="required" placeholder="$!dict.US_EXCHANGE" value="$!dict.US_EXCHANGE" autocomplete="off" class="layui-input">
+						<div>
+							<label class="layui-form-label">汇率设置</label>
+							<div class="layui-input-inline">
+								<input type="text" name="exchange" lay-verify="required" placeholder="$!dict.US_EXCHANGE" value="$!dict.US_EXCHANGE" autocomplete="off" class="layui-input">
+							</div>
 						</div>
 					</div>
 					<div class="layui-form-item">
-						<label class="layui-form-label">入金手续费</label>
-						<div class="layui-input-inline">
-							<input type="text" name="inCharge" lay-verify="required" placeholder="$!dict.IN_CHARGE" value="$!dict.IN_CHARGE" autocomplete="off" class="layui-input">
+						<div>
+							<label class="layui-form-label">入金手续费</label>
+							<div class="layui-input-inline">
+								<input type="text" name="inCharge" lay-verify="required" placeholder="$!dict.IN_CHARGE" value="$!dict.IN_CHARGE" autocomplete="off" class="layui-input">
+							</div>
 						</div>
 					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">出金手续费</label>
-						<div class="layui-input-inline">
-							<input type="text" name="outCharge" lay-verify="required" placeholder="$!dict.OUT_CHARGE" value="$!dict.OUT_CHARGE" autocomplete="off" class="layui-input">
+					<div class="layui-form-item hide">
+						<div>
+							<label class="layui-form-label">出金手续费</label>
+							<div class="layui-input-inline">
+								<input type="text" name="outCharge" lay-verify="required" placeholder="$!dict.OUT_CHARGE" value="$!dict.OUT_CHARGE" autocomplete="off" class="layui-input">
+							</div>
 						</div>
 					</div>
 					<div class="ctn">
 						<button class="layui-btn layui-btn-primary">取消</button>
-						<button class="layui-btn" lay-submit lay-filter="save">确认</button>
+						<button class="layui-btn layui-btn-normal" lay-submit lay-filter="save">确认</button>
 					</div>
 				</div>
 

@@ -13,35 +13,135 @@
 		a {
 			cursor: pointer;
 		}
-		.search div{
-			float: left;
+		.search>div{
+			display: inline-block;
+			width: 235px;
+		}
+		.recharge label{
+			width: 235px;
+		}
+		#userName,#aliasUserName{
+			width: 110px;
+		}
+		.search label span{
+			display: inline-block;
+			width: 70px;
+			color: #666;
+		}
+		.search label input{
+			display: inline-block;
+			width: 80px;
+			margin: 0px;
+			border-radius: 1px;
+		}
+		.search label input{
+			/*background-color: transparent!important;*/
+		}
+		.recharge label:last-of-type input{
+			background-color: #fff;
+			border: solid 1px #e7e7e7;
+			color: #333;
+		}
+		.recharge h1{
+			border-bottom: none!important;
+		}
+		.page{
+			/*width: 100%;*/
+		}
+		.container{
+			width: 900px;
+			padding-right: 20px;
+			padding-top: 20px;
+		}
+		.search button{
+			background-color: #34A8FA;
+			border: none;
+			color: #fff;
+			height:30px;
+			width: 50px;
+			text-align: center;
+			line-height: 30px;
+			border-radius: 2px;
+			cursor: pointer;
+		}
+		.recharge label{
+			display: inline-block;
+			margin-bottom: 0px;
+		}
+		.btn-ctn{
+			width: 106px!important;
+		}
+
+		.search label span{
+			color: #333;
+			font-weight: normal;
+		}
+		.recharge label:last-of-type input{
+			margin-right: 5px;
+		}
+		#confirmStatus{
+			height: 30px;
+			border: none;
+			border: solid 1px #E7E7E7;
+		}
+		.layui-elem-quote{
+			border-left: 5px solid #34A8FA;
+		}
+		.resetbtn{
+			background-color: #fff!important;
+			color: #333!important;
+			border:solid 1px #E7E7E7!important;
+		}
+		.page{
+			padding-right: 35px;
+		}
+		.layui-laypage .layui-laypage-curr .layui-laypage-em{
+			background-color: #34A8FA;
+		}
+		.title{
+			margin-left: -10px;
+			font-size: 20px;
+			margin-bottom: 30px!important;
+		}
+		#remitTable{
+			display: none;
+		}
+		.status select{
+			height: 30px;
+			border: none;
+			border: solid 1px #E7E7E7;
 		}
 	</style>
 </head>
 <body style="text-align: left;background-color: #F5F7F8;">
 	<div class="container">
 		<div class="page recharge phone" style="background-color: #F5F7F8; ">
-			<h1>出入金查询</h1>
-			<div class="search">
-				<div>
-					用户账号：<input type="text" id="userName">
+			<p class="title">出入金查询</p>
+
+			<blockquote class="layui-elem-quote">
+				<div class="search">
+					<div>
+						<label><span>用户账号：</span><input type="text" id="userName"></label>
+					</div>
+					<div>
+						<label><span>子账号：</span><input type="text" id="aliasUserName"></label>
+					</div>
+					<div class="status" style="width: 100px;">
+						<label style="width: 100px;">类型
+							<select id="type">
+								<option value="">全部</option>
+								<option value="0">入金</option>
+								<option value="1">出金</option>
+							</select>
+						</label>
+					</div>
+					<div>
+						<button onclick="clearSearch();">清除</button>
+						<button onclick="searchRemit();">搜索</button>
+					</div>
 				</div>
-				<div>
-					子账号：<input type="text" id="aliasUserName">
-				</div>
-				<div>
-					类型
-					<select id="type">
-						<option value="">全部</option>
-						<option value="0">入金</option>
-						<option value="1">出金</option>
-					</select>
-				</div>
-				<div>
-					<button onclick="clearSearch();">清除</button>
-					<button onclick="searchRemit();">搜索</button>
-				</div>
-			</div>
+			</blockquote>
+
 			<div>
 				<table id="remitTable" lay-filter="remit"></table>
 			</div>

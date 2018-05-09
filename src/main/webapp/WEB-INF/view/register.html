@@ -54,6 +54,10 @@
 			<input type="text" placeholder="输入身份证号" id="identify"></input>
 		</label>
 		<label>
+			<i class="fa fa-address-book"></i>
+			<input type="text" placeholder="请输入姓名" id="name"></input>
+		</label>
+		<label>
 			<!-- <img src="images/m.png" /> -->
 			<i class="fa fa-keyboard-o"></i>
 			<input type="text" placeholder="请输入验证码" id="code"></input>
@@ -61,7 +65,7 @@
 				<img class="captcha" src="$baseUrl/auth/user/register_captcha.png" />
 			</span>
 		</label>
-		<div><button id="register">注&ensp;&ensp;册</button></div>
+		<div><button id="register">注&nbsp;&nbsp;册</button></div>
 	</div>
 <script type="text/javascript" src="$baseUrl/static/lib/jquery-1.12.4.min.js"></script>
 <script type="text/javascript" src="$baseUrl/static/lib/layui/layui.js"></script>
@@ -84,6 +88,7 @@
 		var pwd = $("#pwd").val();
 		var repeatPwd = $("#repeatPwd").val();
 		var identify = $("#identify").val();
+		var name = $("#name").val();
 		var code = $("#code").val();
         //validateForm(userName, pwd, repeatPwd, identify, code);
         $.ajax({
@@ -94,6 +99,7 @@
                 "userName":userName,
 				"pwd":pwd,
 				"repeatPwd":repeatPwd,
+				"name":name,
 				"identify":identify,
 				"code":code
 			},

@@ -14,18 +14,43 @@ var account = {
             async: true,
             url: Global.baseUrl + '/user/fund',
             type: 'get',
+            beforeSend: function(){
+                // 显示遮罩层
+                popLoading();
+            },
             dataType: 'json',
             success: function(data){
+                // 关闭遮罩层
+                closeLoading();
                 console.log(data);
                 if(data.code == 200){
-                    account.renderFund(data.Summary);
-                    syncTakeFee = data.Summary.Commission;
+                    var summary = data.Summary;
+                    var c_summary = account.checkSummary(summary);
+                    account.renderFund(c_summary);
+                    syncTakeFee = c_summary.Commission;
                     console.log("getTakeFee ok");
                 }else{
                     alert(data.msg);
                 }
+            },
+            complete: function(){
+                // 关闭遮罩层
+                closeLoading();
+            },
+            error : function(XMLHttpRequest, textStatus, errorThrown){
+                // 关闭遮罩层
+                closeLoading();
+                alert(errorThrown);
             }
         });
+    },
+    checkSummary:function(data){
+        if(data.length === 1){
+            return data;
+        }
+        if(data.length === 7){
+            return data[6];
+        }
     },
     // 渲染账户资金
     renderFund:function(data){
@@ -72,6 +97,7 @@ var account = {
 
 }
 
+// 在线充值
 var transaction = {
     online:function(){
         var money = $("#kj_money3zx").val();
