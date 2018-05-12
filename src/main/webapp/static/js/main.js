@@ -22,13 +22,17 @@ var account = {
             success: function(data){
                 // 关闭遮罩层
                 closeLoading();
-                console.log(data);
+                //console.log(data);
                 if(data.code == 200){
                     var summary = data.Summary;
                     var c_summary = account.checkSummary(summary);
+                    //console.log("summary");
+                    //console.log(summary);
+                    //console.log("c_summary");
+                    //console.log(c_summary);
                     account.renderFund(c_summary);
                     syncTakeFee = c_summary.Commission;
-                    console.log("getTakeFee ok");
+                    //console.log("getTakeFee ok");
                 }else{
                     alert(data.msg);
                 }
@@ -45,12 +49,10 @@ var account = {
         });
     },
     checkSummary:function(data){
-        if(data.length === 1){
-            return data;
+        if(data.length == 7){
+            return data[0];
         }
-        if(data.length === 7){
-            return data[6];
-        }
+        return data;
     },
     // 渲染账户资金
     renderFund:function(data){
@@ -157,7 +159,7 @@ var bookUser = {
                     , { field: 'flowWay', title: '方式', width:60, align: 'center' }
                     , { field: 'takeFee', title: '手续费', width:60, align: 'center',templet: '#takeFeeTpl'}
                     , { field: 'exchange', title: '汇率', width:60, align: 'center' }
-                    , { field: 'money', title: '出金', align: 'center',templet: '#moneyTpl' }
+                    , { field: 'money', title: '入金', align: 'center',templet: '#moneyTpl' }
                     , { field: 'balance', title: '自有', width:60, align: 'center',templet: '#balanceTpl' }
                     //, { field: 'xxx', title: '授信', align: 'center' }
                     , { field: 'createTime', title: '时间', width:115, align: 'center',templet: '#dateFmt' }

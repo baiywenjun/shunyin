@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    #parse("common/base.html")
+    <meta charset="UTF-8">
+    <title>实名认证信息</title>
+    <link rel="stylesheet" type="text/css" href="$baseUrl/static/css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="$baseUrl/static/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="$baseUrl/static/css/style_console.css">
+    <link rel="stylesheet" type="text/css" href="$baseUrl/static/css/personal.css">
+    <link rel="stylesheet" href="$baseUrl/static/lib/layui/css/layui.css" media="all">
+    <style type="text/css">
+        img{
+            width: 100px;
+            height: 100px;
+            border: dashed 1px grey;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div>
+        <span>用户姓名:</span><span>$!user.realName</span>
+    </div>
+    <div>
+        <span>身份证号码:</span><span>$!user.identity</span>
+    </div>
+    <div>
+        <span>手机号码:</span><span>$!user.userName</span>
+    </div>
+
+</div>
+<div>
+    <h5>身份证正面</h5>
+    <img src="$baseUrl/certification/cert/id_front/$userId" >
+</div>
+<div>
+    <h5>身份证反面</h5>
+    <img src="$baseUrl/certification/cert/id_back/$userId" >
+</div>
+<div>
+    <h5>银行卡正面</h5>
+    <img src="$baseUrl/certification/cert/card_front/$userId" >
+</div>
+<div class="ctn">
+    <button class="layui-btn layui-btn-primary" onclick="closeWindow();">取消</button>
+    <button class="layui-btn layui-btn-normal" onclick="checkPass();">审核通过</button>
+</div>
+</body>
+<script type="text/javascript" src="$baseUrl/static/lib/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="$baseUrl/static/lib/layui/layui.js"></script>
+<script>
+    var userId = '$!userId';
+    var operate = '$!operate';
+    console.log(userId);
+    console.log(operate);
+    if(operate === 'view'){
+        $(".ctn").hide();
+    }
+
+    // 使用layer
+    var layer;
+    layui.use('layer', function () {
+        layer = layui.layer;
+    })
+
+
+    function checkPass(){
+        $.ajax({
+            async: true,
+            url: '$baseUrl/manage/user_check',
+            type: 'get',
+            data : {
+                "userId":userId
+            },
+            dataType: 'json',
+            success: function(data){
+                console.log(data);
+                if(data.code == 200){
+                    layer.alert("操作成功",{icon:1},function(index){
+                        window.parent.location.reload();
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+                    });
+                }else{
+                    layer.alert(data.msg,{icon:0});
+                }
+            }
+        });
+    }
+
+    function closeWindow(){
+        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        parent.layer.close(index); //再执行关闭
+    }
+</script>
+</html>

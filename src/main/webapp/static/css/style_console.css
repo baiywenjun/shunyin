@@ -308,3 +308,6 @@ body {
   box-shadow: 10px 10px 10px -5px #ccbaba;
   -moz-box-shadow: 10px 10px 10px -5px #ccbaba;
 }
+.vert-line{
+  display: inline-block;background-color: #666;height: 10px;width: 1px;
+}

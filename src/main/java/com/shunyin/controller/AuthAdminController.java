@@ -3,6 +3,7 @@ package com.shunyin.controller;
 import com.google.code.kaptcha.Producer;
 import com.shunyin.common.constant.AuthConst;
 import com.shunyin.common.service.AuthHandler;
+import com.shunyin.common.util.MD5Utils;
 import com.shunyin.common.util.R;
 import com.shunyin.entity.SysAdmin;
 import com.shunyin.service.SysAdminService;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Title: 登录
@@ -91,6 +93,11 @@ public class AuthAdminController {
 //		if(false == contextCode.equals(captchaCode)){
 //			return R.ok("验证码错误");
 //		}
+        try {
+            password = MD5Utils.MD5_32bit1(password);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
         SysAdmin sysAdmin = sysAdminService.queryByAdminNameAndPwd(adminName, password);
         if (sysAdmin == null){
             return R.error(1,"帐号或密码错误");

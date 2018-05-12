@@ -25,7 +25,10 @@ public class SysUser implements Serializable {
 	@TableField("user_name")
 	private String userName;
 	private String password;
-	private String name;
+	@TableField("xgj_password")
+	private String xgjPassword;
+	@TableField("real_name")
+	private String realName;
 	private String sex;
 	private Date birthday;
 	private String phone;
@@ -69,12 +72,12 @@ public class SysUser implements Serializable {
 		this.password = password;
 	}
 
-	public String getName() {
-		return name;
+	public String getRealName() {
+		return realName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setRealName(String realName) {
+		this.realName = realName;
 	}
 
 	public String getSex() {
@@ -141,13 +144,22 @@ public class SysUser implements Serializable {
 		this.identity = identity;
 	}
 
+	public String getXgjPassword() {
+		return xgjPassword;
+	}
+
+	public void setXgjPassword(String xgjPassword) {
+		this.xgjPassword = xgjPassword;
+	}
+
 	@Override
 	public String toString() {
 		return "SysUser{" +
 			"accountId=" + accountId +
 			", userName=" + userName +
 			", password=" + password +
-			", name=" + name +
+			", xgjPassword=" + xgjPassword +
+			", realName=" + realName +
 			", sex=" + sex +
 			", birthday=" + birthday +
 			", phone=" + phone +

@@ -20,7 +20,7 @@
 		<!-- MVC中已经扫描 -->
 		<!-- 对service进行组件扫描 -->
 		<!--<context:component-scan base-package="com.shunyin.service"></context:component-scan>-->
-		
+
 		<!-- 验证码 -->
 		<bean id="producer" class="com.google.code.kaptcha.impl.DefaultKaptcha">
 			<property name="config">

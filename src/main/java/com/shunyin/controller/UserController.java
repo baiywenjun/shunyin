@@ -9,6 +9,7 @@ import com.shunyin.common.util.MoneyUtil;
 import com.shunyin.common.util.R;
 import com.shunyin.common.util.Rt;
 import com.shunyin.entity.BookUser;
+import com.shunyin.entity.BusRemitBank;
 import com.shunyin.entity.SysDict;
 import com.shunyin.entity.SysUser;
 import com.shunyin.service.*;
@@ -54,6 +55,9 @@ public class UserController {
     private BusRemitOutService busRemitOutService;
 
     @Autowired
+    private BusRemitBankService busRemitBankService;
+
+    @Autowired
     private BookUserService bookUserService;
 
 
@@ -67,6 +71,12 @@ public class UserController {
         model.addAttribute("aliasName",sysUser.getAliasAccount());
         model.addAttribute("dict",map);
         model.addAttribute("sysTime", DateUtil.formatDateByFormat(new Date(),"yyyy/MM/dd HH:mm:ss"));
+        // 获取开户信息
+        List<BusRemitBank> busRemitBanks = busRemitBankService.queryUsedBanks();
+        if(busRemitBanks!=null && busRemitBanks.size()==2){
+            model.addAttribute("bank1",busRemitBanks.get(0));
+            model.addAttribute("bank2",busRemitBanks.get(1));
+        }
         return "main";
     }
 

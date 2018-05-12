@@ -113,40 +113,41 @@
 		<div class="page recharge phone" style="background-color: #F5F7F8; ">
 			<p class="title">入金申请</p>
 			<blockquote class="layui-elem-quote">
-			<div class="search">
-				<div>
-					<label><span>用户账号：</span><input type="text" id="userName"></label>
-				</div>
-				<div style="margin-left:5px;">
-					<label><span>子账号：</span><input type="text" id="aliasUserName" style="margin-left: -10px;"></label>
-				</div>
-				<div>
-					<label><span>真实姓名：</span><input type="text" id="realName"></label>
-				</div>
-				<div style="width:140px;" class="status">
-					<label style="width:140px;">
-						确认状态
-						<select id="confirmStatus">
-							<option value="">全部</option>
-							<option value="0">未确认</option>
-							<option value="1">已确认</option>
-						</select>
-					</label>
-				</div>
-				<div class="btn-ctn" style="width: 106px;">
-					<button class="resetbtn" onclick="clearSearch();">清除</button>
-					<button style="border: none;height: 28px;line-height: 28px;vertical-align: top;margin-top: 1px;" onclick="searchRemit();">搜索</button>
-				</div>
-			</div>
+			<!--<div class="search">-->
+				<!--<div>-->
+					<!--<label><span>用户账号：</span><input type="text" id="userName"></label>-->
+				<!--</div>-->
+				<!--<div style="margin-left:5px;">-->
+					<!--<label><span>子账号：</span><input type="text" id="aliasUserName" style="margin-left: -10px;"></label>-->
+				<!--</div>-->
+				<!--<div>-->
+					<!--<label><span>真实姓名：</span><input type="text" id="realName"></label>-->
+				<!--</div>-->
+				<!--<div style="width:140px;" class="status">-->
+					<!--<label style="width:140px;">-->
+						<!--确认状态-->
+						<!--<select id="confirmStatus">-->
+							<!--<option value="">全部</option>-->
+							<!--<option value="0">未确认</option>-->
+							<!--<option value="1">已确认</option>-->
+						<!--</select>-->
+					<!--</label>-->
+				<!--</div>-->
+				<!--<div class="btn-ctn" style="width: 106px;">-->
+					<!--<button class="resetbtn" onclick="clearSearch();">清除</button>-->
+					<!--<button style="border: none;height: 28px;line-height: 28px;vertical-align: top;margin-top: 1px;" onclick="searchRemit();">搜索</button>-->
+				<!--</div>-->
+			<!--</div>-->
 			</blockquote>
 			<div style="padding-right: 0px;">
-				<table id="remitTable" lay-filter="remit"></table>
+				<table id="bankTable" lay-filter="bank"></table>
 			</div>
 		</div>
 	</div>
 </body>
 <script type="text/javascript" src="$baseUrl/static/lib/jquery-1.12.4.min.js"></script>
 <script type="text/javascript" src="$baseUrl/static/lib/layui/layui.js"></script>
+<script type="text/javascript" src="$baseUrl/static/js/function.js"></script>
 <script>
 	var table;
 	var layer;
@@ -156,8 +157,8 @@
         layer = layui.layer;
         table = layui.table;
         options = {
-            elem: '#remitTable'
-            ,url: Global.baseUrl + '/manage/remit_record' //数据接口
+            elem: '#bankTable'
+            ,url: Global.baseUrl + '/manage/bank_set_list' //数据接口
             // ,where : {
             //     userName:userName
             // }
@@ -166,40 +167,40 @@
             ,limit: 5
             ,id: 'tableId'
             ,cols: [[ //表头
-                //{ type: 'numbers', title: 'No'},
-                { field: 'userName', title: '用户名', align: 'center', width:100 }
-                , { field: 'aliasUserName', title: '帐号', align: 'center' ,width:95}
-                , { field: 'remitRealName', title: '打款人', align: 'center' ,width:80}
-                , { field: 'remitBankCard', title: '银行卡号', align: 'center',width:80}
-                , { field: 'remitMoney', title: '转账金额', align: 'right' ,width:80, templet: '#moneyTpl'}
-                , { field: 'exchange', title: '汇率', align: 'center',width:50}
-                //, { field: 'toRealName', title: '收款人', align: 'center',width:125}
-                , { field: 'toBankCard', title: '打款银行卡号', align: 'center' ,width:80}
-                //, { field: 'toBankDetail', title: '打款银行明细', align: 'center' }
-                , { field: 'createTime', title: '时间',  align: 'center',width:150, templet: '#dateFmt' }
-                , { field: 'confirmStatus', title: '审核状态', align: 'center' ,width:80, templet:"#status"}
-                , { title: '操作', align: 'center', toolbar: '#toolbar', width: 60 }
-            ]]
+                { type: 'numbers', title: 'No'},
+                { field: 'bankName', title: '银行名称', align: 'center', width:100 }
+                , { field: 'cardNo', title: '帐号', align: 'center' ,width:180}
+                , { field: 'realName', title: '真实姓名', align: 'center' ,width:80}
+                , { field: 'bankDetail', title: '开户信息', align: 'center',width:150}
+                , { field: 'status', title: '是否启用', align: 'center' ,width:80, templet: '#status'}
+                , { field: 'createdTime', title: '创建时间', align: 'center',width:150, templet: '#dateFmt' }
+                , { title: '操作', align: 'center', toolbar: '#toolbar', width: 100 }
+            ]],
+            done: function(res,curr,count){
+                // IE 不支持H5缓存
+                //var bankSetArry = JSON.stringify(res.data);
+                //sessionStorage.setItem("bankSetArry",bankSetArry);
+            }
         }
         tableIns = table.render(options);
 
 
-        table.on('tool(remit)', function(obj){
-            if(obj.event === 'confirm'){
-                layer.confirm('真的确认收款了吗', function(index){
-                    var record = obj.data;
-					//console.log(record);
-					var result = confirmReceive(record.remitId)
-                    if(result.code == 200){
-                        layer.alert("操作成功",{icon:1},function (index) {
-                            window.location.reload();
-                        });
-                    }else{
-                        layer.alert("操作失败",{icon:0});
-                    }
-                });
-            }
-        });
+        // table.on('tool(bank)', function(obj){
+        //     if(obj.event === 'confirm'){
+        //         layer.confirm('真的确认收款了吗', function(index){
+        //             var record = obj.data;
+			// 		//console.log(record);
+			// 		var result = confirmReceive(record.remitId)
+        //             if(result.code == 200){
+        //                 layer.alert("操作成功",{icon:1},function (index) {
+        //                     window.location.reload();
+        //                 });
+        //             }else{
+        //                 layer.alert("操作失败",{icon:0});
+        //             }
+        //         });
+        //     }
+        // });
     });
 
     // 搜索
@@ -223,47 +224,22 @@
 		$(":input,select").val('');
 	}
 
-    function confirmReceive(id){
-        var result = null;
-        $.ajax({
-            async: false,
-            url: '$baseUrl/manage/remit_confirm',
-            type: 'get',
-            data : {"remitId":id},
-            beforeSend: function (){
-                layer.load(2);
-            },
-            dataType: 'json',
-            success: function(data){
-                result = data;
-            }
-            ,complete: function () {
-                layer.closeAll('loading');
-            }
-        });
-        return result;
-	}
+
 </script>
 <script type="text/html" id="toolbar">
-	{{# if(d.confirmStatus == 0){ }}
-	<a class="layui-table-link" lay-event="confirm">确认收款</a>
-	{{# }                  }}
+	<a class="layui-table-link" onclick="openWindow('卡号设置','$baseUrl/manage/bank_set_edit_page','800','550','{{d.cardId}}')">编辑</a>
 	<!--<span class="vert-line"></span>
     <a class="layui-table-link" lay-event="xxx">xxx</a>-->
 </script>
-<script type="text/html" id="moneyTpl">
-	{{# var temp = d.remitMoney/100      }}
-	{{=  Global.formatMoney(temp,2,'￥')  }}
-</script>
 <script type="text/html" id="dateFmt">
-	{{# var temp = new Date(d.createTime)  }}
+	{{# var temp = new Date(d.createdTime)  }}
 	{{= temp.format('yyyy/MM/dd hh:mm:ss')  }}
 </script>
 <script type="text/html" id="status">
 	{{# if(d.confirmStatus == 0){      }}
-		<span style="color: orangered">否</span>
+	<span style="color: orangered">否</span>
 	{{#  }else{     }}
-		<span style="color: green">是</span>
+	<span style="color: green">是</span>
 	{{#  }     }}
 </script>
 </html>

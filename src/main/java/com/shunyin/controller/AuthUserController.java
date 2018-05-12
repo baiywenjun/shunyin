@@ -6,6 +6,8 @@ import com.shunyin.common.service.AuthHandler;
 import com.shunyin.common.util.MD5Utils;
 import com.shunyin.common.util.R;
 import com.shunyin.entity.SysUser;
+import com.shunyin.exception.RRException;
+import com.shunyin.service.SysCertificationService;
 import com.shunyin.service.SysUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -25,6 +27,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -47,6 +51,9 @@ public class AuthUserController {
 
     @Autowired
     private SysUserService sysUserService;
+
+    @Autowired
+    private SysCertificationService sysCertificationService;
 
     /**
      * 跳转登录页
@@ -153,10 +160,15 @@ public class AuthUserController {
     @PostMapping("/register")
     @ResponseBody
     public R userRegister(String userName, String pwd, String repeatPwd, String identify, String name, String code,
-                          HttpServletRequest request){
+                          String idFrontFilePath, String idFrontUrl, String idBackFilePath, String idBackUrl,
+                          String cardFrontFilePath, String cardFrontUrl, HttpServletRequest request){
         R r = this.validateRegister(userName, pwd, repeatPwd, identify, name, code, request);
+        R r1 = this.validateCertification(idFrontFilePath, idFrontUrl, idBackFilePath, idBackUrl, cardFrontFilePath, cardFrontUrl);
         if(r!=null){
             return r;
+        }
+        if(r1!=null){
+            return r1;
         }
         // md5加密密码
         try {
@@ -164,10 +176,19 @@ public class AuthUserController {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        Boolean flag = sysUserService.userRegister(userName, pwd, identify,name);
+        //Boolean flag = sysUserService.userRegister(userName, pwd, identify,name);
+        SysUser sysUser = sysUserService.userRegisterReturnAliasAccount(userName, pwd, repeatPwd, identify, name);
+        Long accountId = sysUser.getAccountId();
+        if(accountId == null){
+            throw new RRException("获取返回主键为空，注册失败");
+        }
+        Boolean flag = sysCertificationService.addRecord(idFrontFilePath, idFrontUrl, idBackFilePath, idBackUrl, cardFrontFilePath, cardFrontUrl, accountId);
+        //Map<String,Object> map = new HashMap<>();
+        //map.put("aliasAccount",aliasAccount);
+        //map.put("aliasPwd",repeatPwd);
+        //return (StringUtils.isNotEmpty(aliasAccount))?R.ok(map):R.error();
         return (flag)?R.ok():R.error();
     }
-
 
     /**
      * 注册表单验证
@@ -230,5 +251,21 @@ public class AuthUserController {
         }
         return null;
     }
+
+
+    // 实名认证图片上传校验
+    private R validateCertification(String idFrontFilePath, String idFrontUrl, String idBackFilePath, String idBackUrl, String cardFrontFilePath, String cardFrontUrl) {
+        if(StringUtils.isEmpty(idFrontFilePath) || StringUtils.isEmpty(idFrontUrl)){
+            return R.error("身份证正面未上传");
+        }
+        if(StringUtils.isEmpty(idBackFilePath) || StringUtils.isEmpty(idBackUrl)){
+            return R.error("身份证反面未上传");
+        }
+        if(StringUtils.isEmpty(cardFrontFilePath) || StringUtils.isEmpty(cardFrontUrl)){
+            return R.error("银行卡正面未上传");
+        }
+        return null;
+    }
+
 
 }

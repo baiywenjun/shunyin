@@ -38,10 +38,16 @@
 			border-left: 5px solid #34A8FA;
 			margin-left: 20px;
 			margin-top: -10px;
-			margin-bottom: 30px;
+			margin-bottom: 10px;
 		}
 		.hide{
 			display: none;
+		}
+		.container {
+			padding-top: 5px;
+		}
+		.layui-form-item {
+			margin-bottom: -5px;
 		}
 	</style>
 </head>
@@ -53,30 +59,55 @@
 				<div class="layui-form layui-form-pane">
 					<div class="layui-form-item">
 						<div>
-							<label class="layui-form-label">汇率设置</label>
+							<label class="layui-form-label">银行名称</label>
 							<div class="layui-input-inline">
-								<input type="text" name="exchange" lay-verify="required" placeholder="$!dict.US_EXCHANGE" value="$!dict.US_EXCHANGE" autocomplete="off" class="layui-input">
+								<input type="text" name="bankName" lay-verify="required"  value="$!card.bankName" autocomplete="off" class="layui-input">
 							</div>
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<div>
-							<label class="layui-form-label">入金手续费</label>
+							<label class="layui-form-label">开户信息</label>
 							<div class="layui-input-inline">
-								<input type="text" name="inCharge" lay-verify="required" placeholder="$!dict.IN_CHARGE" value="$!dict.IN_CHARGE" autocomplete="off" class="layui-input">
+								<input type="text" name="bankDetail" lay-verify="required"  value="$!card.bankDetail" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div>
+							<label class="layui-form-label">帐号</label>
+							<div class="layui-input-inline">
+								<input type="text" name="cardNo" lay-verify="required"  value="$!card.cardNo" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div>
+							<label class="layui-form-label">真实姓名</label>
+							<div class="layui-input-inline">
+								<input type="text" name="realName" lay-verify="required"  value="$!card.realName" autocomplete="off" class="layui-input">
 							</div>
 						</div>
 					</div>
 					<div class="layui-form-item hide">
 						<div>
-							<label class="layui-form-label">出金手续费</label>
+							<label class="layui-form-label">银行IMG</label>
 							<div class="layui-input-inline">
-								<input type="text" name="outCharge" lay-verify="required" placeholder="$!dict.OUT_CHARGE" value="$!dict.OUT_CHARGE" autocomplete="off" class="layui-input">
+								<input type="text" name="imgUrl" lay-verify="required"  value="$!card.imgUrl" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div>
+							<label class="layui-form-label">排序</label>
+							<div class="layui-input-inline">
+								<input type="text" name="sortId" lay-verify="required"  value="$!card.sortId" autocomplete="off" class="layui-input">
 							</div>
 						</div>
 					</div>
 					<div class="ctn">
-						<button class="layui-btn layui-btn-primary">取消</button>
+						<input type="hidden" name="cardId" value="$!card.cardId" >
+						<button class="layui-btn layui-btn-primary" onclick="closeWindow();">取消</button>
 						<button class="layui-btn layui-btn-normal" lay-submit lay-filter="save">确认</button>
 					</div>
 				</div>
@@ -95,19 +126,24 @@
 			//console.log(data);
             $.ajax({
                 async: true,
-                url: '$baseUrl/manage/profile',
+                url: '$baseUrl/manage/bank_set_edit',
                 type: 'get',
                 data : {
-					"exchange":data.field.exchange,
-					"inCharge":data.field.inCharge,
-					"outCharge":data.field.outCharge
+                    "id":data.field.cardId,
+					"bankName":data.field.bankName,
+					"bankDetail":data.field.bankDetail,
+					"cardNo":data.field.cardNo,
+					"realName":data.field.realName,
+					"sortId":data.field.sortId
 				},
                 dataType: 'json',
                 success: function(data){
                     if(data.code == 200){
                         layer.alert("操作成功",{icon:1},function(index){
-                          window.location.reload();
-                        })
+                            window.parent.location.reload();
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
+                        });
                     }else{
 						layer.alert(data.msg,{icon:0});
                     }
@@ -116,5 +152,9 @@
         })
     });
 
+	function closeWindow(){
+		var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+		parent.layer.close(index); //再执行关闭
+	}
 </script>
 </html>

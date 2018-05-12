@@ -13,11 +13,11 @@
     wap_pay();
     function wap_pay() {
         var responseText = $("#credential").text();
-        console.log(responseText);
+        //console.log(responseText);
         paymentjs.createPayment(responseText, function(result, err) {
-            console.log(result);
-            console.log(err.msg);
-            console.log(err.extra);
+            //console.log(result);
+            //console.log(err.msg);
+            //console.log(err.extra);
         });
     }
 </script>

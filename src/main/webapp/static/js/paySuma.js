@@ -1227,7 +1227,7 @@ function formtotakemoney(){
 		},
 		success	:	function(data){
 			if(data.code==200){
-				console.log("success");
+				//console.log("success");
 				closeLoading();
 				//requestId=data.requestId;
 				popAlert(data.msg);
@@ -1323,7 +1323,9 @@ function detectOS() {
     }
     return "other";
 }
-function AlertPostinfo(){
+
+// 屏蔽弹出完善信息框
+/*function AlertPostinfo(){
 	var qrhref;
 	$("#infoqrimg").attr("src","/googleqr.asp?chs=180x180&chl="+window.location.protocol+"//"+window.location.host+"/QRScan/A"+$("#dataval0").text());
 	qrhref=$("#dataval0").text().toString();
@@ -1335,7 +1337,7 @@ function AlertPostinfo(){
 	$("#closeDetail").on("click",function(){if($("#closeDetail").text()=="关闭"){$("#detailWin").hide();$("#startMask").hide()}})
 	//apcdtime=3;
 	AlertPostinfoCD();
-};
+};*/
 
 function AlertPostinfoCD(){
 	if (apcdtime>0){

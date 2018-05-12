@@ -2,12 +2,10 @@ package com.shunyin.controller;
 
 import com.shunyin.common.util.R;
 import com.shunyin.common.util.Rt;
+import com.shunyin.entity.BusRemitBank;
 import com.shunyin.pojo.BookUserQuery;
 import com.shunyin.pojo.BusRemitQuery;
-import com.shunyin.service.BookUserService;
-import com.shunyin.service.BusRemitOutService;
-import com.shunyin.service.BusRemitService;
-import com.shunyin.service.SysDictService;
+import com.shunyin.service.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +39,13 @@ public class ManageController {
     private BookUserService bookUserService;
 
     @Autowired
+    private BusRemitBankService busRemitBankService;
+
+    @Autowired
     private SysDictService sysDictService;
+
+    @Autowired
+    private SysUserService sysUserService;
 
     @RequestMapping("/")
     public String adminHomepage(Model model){
@@ -61,6 +65,24 @@ public class ManageController {
     @RequestMapping("/book_page")
     public String bookUserRecord(){
         return "console/book";
+    }
+
+    @RequestMapping("/user_page")
+    public String userPage(){
+        return "console/user_list";
+    }
+
+    @RequestMapping("/bank_set_page")
+    public String bankSetPage(){
+        return "console/bank_set";
+    }
+
+    @RequestMapping("/bank_set_edit_page")
+    public String bankSetEditPage(Model model, String id){
+        BusRemitBank one = busRemitBankService.findOneById(Long.parseLong(id));
+        model.addAttribute("cardId",id);
+        model.addAttribute("card",one);
+        return "console/bank_set_edit";
     }
 
     @RequestMapping("/profile_page")
@@ -155,6 +177,73 @@ public class ManageController {
     }
 
     /**
+     * 用户管理
+     * @param userName
+     * @param aliasName
+     * @param page
+     * @param limit
+     * @return
+     */
+    @RequestMapping("/user_list")
+    @ResponseBody
+    public Rt queryUserList(String userName, String aliasName, String realName, int page, int limit){
+        return sysUserService.queryByPage(userName, aliasName, realName, page, limit);
+    }
+
+    /**
+     * 用户审核通过
+     * @param userId id
+     * @return
+     */
+    @RequestMapping("/user_check")
+    @ResponseBody
+    public R checkUserCertification(String userId){
+        boolean flag = sysUserService.checkPassById(Long.parseLong(userId));
+        return (flag)?R.ok():R.error();
+    }
+
+    /**
+     * 帐号设置列表
+     * @param cardNo
+     * @param page
+     * @param limit
+     * @return
+     */
+    @RequestMapping("/bank_set_list")
+    @ResponseBody
+    public Rt bankSetList(String cardNo, int page, int limit){
+        return busRemitBankService.queryByPage(cardNo,page,limit);
+    }
+
+    /**
+     * 卡号设置
+     * @param id
+     * @param bankName
+     * @param bankDetail
+     * @param cardNo
+     * @param realName
+     * @param sortId
+     * @return
+     */
+    @RequestMapping("/bank_set_edit")
+    @ResponseBody
+    public R bankCardEdit(Long id,String bankName,String bankDetail,String cardNo,String realName,String sortId){
+        R r = this.validateBankCardSet(id, bankName, bankDetail, cardNo, realName, sortId);
+        if(r!=null){
+            return r;
+        }
+        BusRemitBank card = new BusRemitBank();
+        card.setCardId(id);
+        card.setBankName(bankName);
+        card.setBankDetail(bankDetail);
+        card.setCardNo(cardNo);
+        card.setRealName(realName);
+        card.setSortId(Integer.parseInt(sortId));
+        boolean flag = busRemitBankService.updateByPrimay(card);
+        return (flag)?R.ok("操作成功"):R.error();
+    }
+
+    /**
      * 设置属性
      * @param exchange
      * @param inCharge
@@ -190,5 +279,27 @@ public class ManageController {
         query.setAliasUserName(aliasUserName);
         query.setSerialNo(serialNo);
         return query;
+    }
+
+    private R validateBankCardSet(Long id,String bankName,String bankDetail,String cardNo,String realName,String sortId){
+        if(id == null){
+            return R.error("主键不能为空");
+        }
+        if(StringUtils.isEmpty(bankName)){
+            return R.error("银行名称不能为空");
+        }
+        if(StringUtils.isEmpty(bankDetail)){
+            return R.error("开户信息不能为空");
+        }
+        if(StringUtils.isEmpty(cardNo)){
+            return R.error("银行卡号不能为空");
+        }
+        if(StringUtils.isEmpty(realName)){
+            return R.error("真实不能为空");
+        }
+        if(! StringUtils.isNumeric(sortId)){
+            return R.error("排序不能为空，切必须为整数");
+        }
+        return null;
     }
 }

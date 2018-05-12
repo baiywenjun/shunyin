@@ -11,4 +11,5 @@ public interface ConfigConst {
     // 跟随配置的账号
     String FLOW_ACCOUNT = "1120020002";
 
+
 }

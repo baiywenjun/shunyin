@@ -10,7 +10,7 @@
 	<link rel="stylesheet" type="text/css" href="$baseUrl/static/css/style.css">
 	<link rel="stylesheet" href="$baseUrl/static/lib/layui/css/layui.css" media="all">
 	<style type="text/css">
-		.login button{
+		.login .submit{
 			margin-top: 30px;
 		}
 		.login label{
@@ -30,45 +30,88 @@
 			height: 30px;
 			top: 5px;
 		}
+		.left-info,.right-info {
+			border: dashed 1px grey;
+			display: inline-block;
+			width: 49%;
+			vertical-align: top;
+		}
+		.upload-img {
+			width: 100px;
+			height: 100px;
+		}
+		.inline {
+			display: inline-block;
+		}
 	</style>
 </head>
 <body>
 	<div class="titlelogo"><img src="$baseUrl/static/images/logotit.png" /></div>
 	<div class="login">
 		<h5>用户注册</h5>
-		<label>
-			<img src="$baseUrl/static/images/a.png" />
-			<input type="text" placeholder="请输入账号" id="userName"></input>
-		</label>
-		<label>
-			<img src="$baseUrl/static/images/m.png" />
-			<input type="password" placeholder="请输入密码" id="pwd"></input>
-		</label>
-		<label>
-			<img src="$baseUrl/static/images/m.png" />
-			<input type="password" placeholder="请确认密码" id="repeatPwd"></input>
-		</label>
-		<label>
-			<!-- <img src="images/m.png" /> -->
-			<i class="fa fa-id-card"></i>
-			<input type="text" placeholder="输入身份证号" id="identify"></input>
-		</label>
-		<label>
-			<i class="fa fa-address-book"></i>
-			<input type="text" placeholder="请输入姓名" id="name"></input>
-		</label>
-		<label>
-			<!-- <img src="images/m.png" /> -->
-			<i class="fa fa-keyboard-o"></i>
-			<input type="text" placeholder="请输入验证码" id="code"></input>
-			<span id="captcha">
-				<img class="captcha" src="$baseUrl/auth/user/register_captcha.png" />
-			</span>
-		</label>
-		<div><button id="register">注&nbsp;&nbsp;册</button></div>
+		<!-- left -->
+		<div class="left-info">
+			<label>
+				<img src="$baseUrl/static/images/a.png" />
+				<input type="text" placeholder="请输入账号" id="userName"></input>
+			</label>
+			<label>
+				<img src="$baseUrl/static/images/m.png" />
+				<input type="password" placeholder="请输入密码" id="pwd"></input>
+			</label>
+			<label>
+				<img src="$baseUrl/static/images/m.png" />
+				<input type="password" placeholder="请确认密码" id="repeatPwd"></input>
+			</label>
+			<label>
+				<!-- <img src="images/m.png" /> -->
+				<i class="fa fa-id-card"></i>
+				<input type="text" placeholder="输入身份证号" id="identify"></input>
+			</label>
+			<label>
+				<i class="fa fa-address-book"></i>
+				<input type="text" placeholder="请输入姓名" id="name"></input>
+			</label>
+			<label>
+				<!-- <img src="images/m.png" /> -->
+				<i class="fa fa-keyboard-o"></i>
+				<input type="text" placeholder="请输入验证码" id="code"></input>
+				<span id="captcha">
+					<img class="captcha" src="$baseUrl/auth/user/register_captcha.png" />
+				</span>
+			</label>
+		</div>
+		<!-- right-->
+		<div class="right-info">
+			<div class="layui-upload">
+				<div class="layui-upload-list inline">
+					<img class="upload-img" id="idFrontUp">
+					<p id="demoText1"></p>
+				</div>
+				<button type="button" class="layui-btn inline" id="idFront">上传身份证正面</button>
+			</div>
+			<div class="layui-upload">
+				<div class="layui-upload-list inline">
+					<img class="upload-img" id="idBackUp">
+					<p id="demoText2"></p>
+				</div>
+				<button type="button" class="layui-btn inline" id="idBack">上传身份证反面</button>
+			</div>
+			<div class="layui-upload">
+				<div class="layui-upload-list inline">
+					<img class="upload-img" id="cardFrontUp">
+					<p id="demoText3"></p>
+				</div>
+				<button type="button" class="layui-btn inline" id="cardFront">上传银行卡正面</button>
+			</div>
+		</div>
+		<div>
+			<button id="register" class="submit">注&nbsp;&nbsp;册</button>
+		</div>
 	</div>
 <script type="text/javascript" src="$baseUrl/static/lib/jquery-1.12.4.min.js"></script>
 <script type="text/javascript" src="$baseUrl/static/lib/layui/layui.js"></script>
+<script type="text/javascript" src="$baseUrl/static/js/CardValidate.js"></script>
 <script>
     // 使用layer
     var layer;
@@ -82,7 +125,15 @@
         $(this).append("<img src='$baseUrl/auth/user/register_captcha.png' style='position: absolute;right: 6px;height: 30px;top: 5px;'/>");
     })
 
+	// 实名认证信息
+    var idFrontFilePath = '';
+    var idFrontUrl = '';
+    var idBackFilePath = '';
+    var idBackUrl = '';
+    var cardFrontFilePath = '';
+    var cardFrontUrl = '';
 
+    // 注册
     $("#register").click(function(){
 		var userName = $("#userName").val();
 		var pwd = $("#pwd").val();
@@ -90,6 +141,17 @@
 		var identify = $("#identify").val();
 		var name = $("#name").val();
 		var code = $("#code").val();
+        var flag = IdCardValidate(identify);
+        if(! flag){
+            layer.alert("请填写正确的身份证号码");
+            return;
+		}
+		console.log(idFrontFilePath);
+		console.log(idFrontUrl);
+		console.log(idBackFilePath);
+		console.log(idBackUrl);
+		console.log(cardFrontFilePath);
+		console.log(cardFrontUrl);
         //validateForm(userName, pwd, repeatPwd, identify, code);
         $.ajax({
             async: true,
@@ -101,7 +163,13 @@
 				"repeatPwd":repeatPwd,
 				"name":name,
 				"identify":identify,
-				"code":code
+				"code":code,
+				"idFrontFilePath":idFrontFilePath,
+				"idFrontUrl":idFrontUrl,
+				"idBackFilePath":idBackFilePath,
+				"idBackUrl":idBackUrl,
+				"cardFrontFilePath":cardFrontFilePath,
+				"cardFrontUrl":cardFrontUrl
 			},
 			beforeSend: function (){
 				layer.load(2);
@@ -109,9 +177,15 @@
             dataType: 'json',
             success: function(data){
                 if(data.code==200){
-                    layer.alert("注册成功",{icon:1},function(index){
+                    var aliasAccount = data.aliasAccount;
+                    var aliasPwd = data.aliasPwd;
+                    // change 需求变更为上传身份证信息实名认证 20180512
+                    /*layer.alert("<p>注册成功</p><p>信管家帐号："+ aliasAccount + "</p><p>信管家密码："+ aliasPwd +"</p>",{icon:1},function(index){
 						window.location.href = Global.baseUrl + "/"
-                    });
+                    });*/
+                    layer.alert("<p>注册成功,请等待管理员审核。</p><p>审核成功后，将会发送短信通知您。</p>",{icon:1},function(index) {
+                        window.location.href = Global.baseUrl + "/"
+                    })
 				} else if (data.code == 2){
                     layer.alert("用户名已被注册，请更换其他用户名");
 				} else{
@@ -151,6 +225,109 @@
         }
     }
 
+</script>
+<script>
+	layui.use('upload', function() {
+		var upload = layui.upload;
+		//执行实例
+		//普通图片上传
+		var options_id_front = {
+            elem: '#idFront',
+            url: '$baseUrl/certification/upload/id_front',
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#idFrontUp').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res, index, upload) {
+                //如果上传失败
+                if (res.code === 200) {
+                    console.log(res);
+                    idFrontFilePath = res.data.upFilePath;
+                    idFrontUrl = res.data.downUrl;
+                    return layer.msg('上传成功');
+
+                }else {
+                    return layer.msg('上传失败');
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText1');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function() {
+                    uploadInst_id_front.upload();
+                });
+            }
+        };
+        var options_id_back = {
+            elem: '#idBack',
+            url: '$baseUrl/certification/upload/id_back',
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#idBackUp').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res, index, upload) {
+                //如果上传失败
+                if (res.code === 200) {
+                    console.log(res);
+                    idBackFilePath = res.data.upFilePath;
+                    idBackUrl = res.data.downUrl;
+                    return layer.msg('上传成功');
+
+                }else {
+                    return layer.msg('上传失败');
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText2');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function() {
+                    uploadInst_id_back.upload();
+                });
+            }
+        };
+        var options_card_front = {
+            elem: '#cardFront',
+            url: '$baseUrl/certification/upload/card_front',
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#cardFrontUp').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res, index, upload) {
+                //如果上传失败
+                if (res.code === 200) {
+                    console.log(res);
+                    cardFrontFilePath = res.data.upFilePath;
+                    cardFrontUrl = res.data.downUrl;
+                    return layer.msg('上传成功');
+
+                }else {
+                    return layer.msg('上传失败');
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText3');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function() {
+                    uploadInst_card_front.upload();
+                });
+            }
+        };
+		var uploadInst_id_front = upload.render(options_id_front);
+		var uploadInst_id_back = upload.render(options_id_back);
+		var uploadInst_card_front = upload.render(options_card_front);
+	});
 </script>
 </body>
 </html>

@@ -22,7 +22,7 @@ public class SysAdminServiceImpl extends ServiceImpl<SysAdminMapper, SysAdmin> i
     public SysAdmin queryByAdminNameAndPwd(String adminName,String password){
         SysAdmin sysAdmin = this.selectOne(new EntityWrapper<SysAdmin>()
                 .eq("admin_name", adminName)
-                .and("password", password));
+                .eq("password", password));
         return sysAdmin;
     }
 

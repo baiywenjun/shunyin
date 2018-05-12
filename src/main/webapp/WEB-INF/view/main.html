@@ -321,22 +321,24 @@
 													<div class="choseBankcard">
 														<input type="radio" name="choseBank"/>
 													</div>
-													<img src="$baseUrl/static/images/abc.jpg" class="bankCardlogo" title="农业银行">
+													#set( $imgUrlA = $baseUrl + $!bank1.imgUrl)
+													<img src="$imgUrlA" class="bankCardlogo" title="$!bank1.bankName">
 													<div class="bankDetail">
-														<p class="bankcardNum"><span>银行帐号：</span><span class="cardNum">6228480329522386070</span></p>
-														<p class="acountName"><span>账户名称：</span><span class="companyName">陈军土</span><span class="hong-txt">(最后一个字是土，土地的土)</span></p>
-														<p class="acountName"><span>开户银行：</span><span class="bankName">农业银行杭州桐庐县支行</span></p>
+														<p class="bankcardNum"><span>银行帐号：</span><span class="cardNum">$!bank1.cardNo</span></p>
+														<p class="acountName"><span>账户名称：</span><span class="companyName">$!bank1.realName</span><span class="hong-txt"></span></p>
+														<p class="acountName"><span>开户银行：</span><span class="bankName">$!bank1.bankDetail</span></p>
 													</div>
 												</li>
 												<li class="clearfix">
 													<div class="choseBankcard">
 														<input type="radio" name="choseBank"/>
 													</div>
-													<img src="$baseUrl/static/images/icbc.jpg" class="bankCardlogo" title="工商银行">
+													#set( $imgUrlB = $baseUrl + $!bank2.imgUrl)
+													<img src="$imgUrlB" class="bankCardlogo" title="$!bank2.bankName">
 													<div class="bankDetail">
-														<p class="bankcardNum"><span>银行帐号：</span><span class="cardNum">6212261202042194085</span></p>
-														<p class="acountName"><span>账户名称：</span><span class="companyName">陈军土</span><span class="hong-txt">(最后一个字是土，土地的土)</span></p>
-														<p class="acountName"><span>开户银行：</span><span class="bankName">工商银行桐庐迎南支行</span></p>
+														<p class="bankcardNum"><span>银行帐号：</span><span class="cardNum">$!bank2.cardNo</span></p>
+														<p class="acountName"><span>账户名称：</span><span class="companyName">$!bank2.realName</span><span class="hong-txt"></span></p>
+														<p class="acountName"><span>开户银行：</span><span class="bankName">$!bank2.bankDetail</span></p>
 													</div>
 												</li>
 											</ul>

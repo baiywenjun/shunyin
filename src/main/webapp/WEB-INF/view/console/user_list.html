@@ -106,6 +106,11 @@
 		.layui-table-cell {
 			padding: 0 0px;
 		}
+		#no-select {
+			cursor: default;
+			color: grey;
+		}
+
 	</style>
 </head>
 <body style="text-align: left;background-color: #F5F7F8;">
@@ -123,7 +128,7 @@
 				<div>
 					<label><span>真实姓名：</span><input type="text" id="realName"></label>
 				</div>
-				<div style="width:140px;" class="status">
+				<!--<div style="width:140px;" class="status">
 					<label style="width:140px;">
 						确认状态
 						<select id="confirmStatus">
@@ -132,7 +137,7 @@
 							<option value="1">已确认</option>
 						</select>
 					</label>
-				</div>
+				</div>-->
 				<div class="btn-ctn" style="width: 106px;">
 					<button class="resetbtn" onclick="clearSearch();">清除</button>
 					<button style="border: none;height: 28px;line-height: 28px;vertical-align: top;margin-top: 1px;" onclick="searchRemit();">搜索</button>
@@ -147,6 +152,7 @@
 </body>
 <script type="text/javascript" src="$baseUrl/static/lib/jquery-1.12.4.min.js"></script>
 <script type="text/javascript" src="$baseUrl/static/lib/layui/layui.js"></script>
+<script type="text/javascript" src="$baseUrl/static/js/function.js"></script>
 <script>
 	var table;
 	var layer;
@@ -157,7 +163,7 @@
         table = layui.table;
         options = {
             elem: '#remitTable'
-            ,url: Global.baseUrl + '/manage/remit_record' //数据接口
+            ,url: Global.baseUrl + '/manage/user_list' //数据接口
             // ,where : {
             //     userName:userName
             // }
@@ -166,40 +172,27 @@
             ,limit: 5
             ,id: 'tableId'
             ,cols: [[ //表头
-                //{ type: 'numbers', title: 'No'},
+                { type: 'numbers', title: 'No'},
                 { field: 'userName', title: '用户名', align: 'center', width:100 }
-                , { field: 'aliasUserName', title: '帐号', align: 'center' ,width:95}
-                , { field: 'remitRealName', title: '打款人', align: 'center' ,width:80}
-                , { field: 'remitBankCard', title: '银行卡号', align: 'center',width:80}
-                , { field: 'remitMoney', title: '转账金额', align: 'right' ,width:80, templet: '#moneyTpl'}
-                , { field: 'exchange', title: '汇率', align: 'center',width:50}
-                //, { field: 'toRealName', title: '收款人', align: 'center',width:125}
-                , { field: 'toBankCard', title: '打款银行卡号', align: 'center' ,width:80}
-                //, { field: 'toBankDetail', title: '打款银行明细', align: 'center' }
-                , { field: 'createTime', title: '时间',  align: 'center',width:150, templet: '#dateFmt' }
-                , { field: 'confirmStatus', title: '审核状态', align: 'center' ,width:80, templet:"#status"}
-                , { title: '操作', align: 'center', toolbar: '#toolbar', width: 60 }
+                , { field: 'aliasAccount', title: '信管家帐号', align: 'center',width:100 }
+                , { field: 'xgjPassword', title: '信管家密码', align: 'center',width:80}
+                , { field: 'realName', title: '真实姓名', align: 'center',width:80}
+                , { field: 'identity', title: '身份证', align: 'center',width:160}
+                , { field: 'createTime', title: '注册时间',  align: 'center',width:150, templet: '#dateFmt' }
+                , { title: '操作', align: 'center', toolbar: '#toolbar', width: 120 }
             ]]
         }
         tableIns = table.render(options);
 
+        /*table.on('tool(remit)', function(obj){
+            if(obj.event === 'checkId'){
 
-        table.on('tool(remit)', function(obj){
-            if(obj.event === 'confirm'){
-                layer.confirm('真的确认收款了吗', function(index){
-                    var record = obj.data;
-					//console.log(record);
-					var result = confirmReceive(record.remitId)
-                    if(result.code == 200){
-                        layer.alert("操作成功",{icon:1},function (index) {
-                            window.location.reload();
-                        });
-                    }else{
-                        layer.alert("操作失败",{icon:0});
-                    }
-                });
+
             }
-        });
+            if(obj.event === 'viewId'){
+                openWindow("用户信息查看","url","900","500","{{d.accountId}}");
+            }
+        });*/
     });
 
     // 搜索
@@ -207,13 +200,12 @@
         var userName = $("#userName").val();
         var aliasUserName = $("#aliasUserName").val();
         var realName = $("#realName").val();
-        var confirmStatus = $("#confirmStatus").val();
+        //var confirmStatus = $("#confirmStatus").val();
         tableIns.reload({
 			where:{
 			    userName:userName,
-                aliasUserName:aliasUserName,
-                realName:realName,
-                confirmStatus:confirmStatus
+                aliasName:aliasUserName,
+				realName:realName
 			}
 		})
     }
@@ -223,33 +215,15 @@
 		$(":input,select").val('');
 	}
 
-    function confirmReceive(id){
-        var result = null;
-        $.ajax({
-            async: false,
-            url: '$baseUrl/manage/remit_confirm',
-            type: 'get',
-            data : {"remitId":id},
-            beforeSend: function (){
-                layer.load(2);
-            },
-            dataType: 'json',
-            success: function(data){
-                result = data;
-            }
-            ,complete: function () {
-                layer.closeAll('loading');
-            }
-        });
-        return result;
-	}
 </script>
 <script type="text/html" id="toolbar">
-	{{# if(d.confirmStatus == 0){ }}
-	<a class="layui-table-link" lay-event="confirm">确认收款</a>
-	{{# }                  }}
-	<!--<span class="vert-line"></span>
-    <a class="layui-table-link" lay-event="xxx">xxx</a>-->
+	{{# if(d.status === 'N'){ }}
+	<a class="layui-table-link" lay-event="checkId" onclick="openWindow('用户审核','$baseUrl/certification/check','860','500','{{d.accountId}}')">审核</a>
+	{{# } else {                  }}
+	<a class="layui-table-link" id="no-select">审核</a>
+	{{# }                         }}
+	<span class="vert-line"></span>
+    <a class="layui-table-link" lay-event="viewId" onclick="openWindow('用户审核','$baseUrl/certification/view','860','500','{{d.accountId}}')">查看详情</a>
 </script>
 <script type="text/html" id="moneyTpl">
 	{{# var temp = d.remitMoney/100      }}

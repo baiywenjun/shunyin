@@ -13,7 +13,7 @@ button{
 .login{
 	background-color: #fff;
 	display: inline-block;
-	width: 560px;
+	width: 800px;
 	border-radius: 10px;
 	text-align: center;
 	padding-bottom: 60px;
@@ -21,7 +21,7 @@ button{
 }
 .login label{
 	display: block;
-	margin-left: 130px;
+	margin-left: 55px;
 	border:solid 1px #ccc;
 	width: 300px;
 	border-radius: 8px;
@@ -58,7 +58,7 @@ button{
 	margin-top: 20px;
 	margin-left: 30px;
 }
-.login button{
+.login .submit {
 	display: inline-block;
 	background-color: #FF8723;
 	border: none;
@@ -90,4 +90,8 @@ button{
 }
 .transout .values>div>div:last-of-type input{
 	height: 30px;width: 277px;
+}
+
+.vert-line{
+	display: inline-block;background-color: #666;height: 10px;width: 1px;
 }
